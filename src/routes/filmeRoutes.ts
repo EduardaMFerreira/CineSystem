@@ -1,11 +1,12 @@
-import { Router } from 'express';
-import { filmeController } from '../controllers/filmeController';
+import { Router } from "express";
+import { getAll, getById, create, update, remove } from "../controllers/filmeController";
 
 const router = Router();
 
-router.get('/', filmeController.getAll);
-router.get('/:id', filmeController.getById);
-router.post('/', filmeController.create);
-router.put('/:id', filmeController.update);
-router.delete('/:id', filmeController.delete);
+router.get("/", getAll);
+router.get("/:id", getById);
+router.post("/", create);
+router.put("/:id", update);
+router.delete("/:id", remove);
+
 export default router;
