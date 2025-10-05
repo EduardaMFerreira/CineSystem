@@ -1,6 +1,7 @@
 import express, { Express, Request, Response } from "express";
 import salaRoutes from "./routes/salaRoutes";
 import filmeRoutes from "./routes/filmeRoutes"; // 🆕 Importando as rotas de filmes
+import sessaoRoutes from "./routes/sessaoRoutes"; 
 
 const app: Express = express();
 const port: number = 3000;
@@ -15,8 +16,11 @@ app.get("/", (req: Request, res: Response) => {
 // Rotas de Sala
 app.use("/salas", salaRoutes);
 
-// 🆕 Rotas de Filme
+// Rotas de Filme
 app.use("/filmes", filmeRoutes);
+
+// Rotas de Sessão
+app.use("/sessoes", sessaoRoutes);
 
 app.listen(port, () => {
   console.log(`🚀 Servidor rodando na porta ${port}`);
