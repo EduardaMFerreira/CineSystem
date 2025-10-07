@@ -3,6 +3,15 @@ import { getAll, getById, create, update, remove } from "../controllers/filmeCon
 
 const router = Router();
 
+
+/**
+ * Tag do Swagger para agrupar os endpoints de Filmes.
+ *
+ * - name: nome do grupo
+ * - description: descrição geral do grupo de rotas
+ */
+
+
 /**
  * @swagger
  * tags:
@@ -10,116 +19,55 @@ const router = Router();
  *   description: Endpoints de gerenciamento de filmes
  */
 
+
 /**
- * @swagger
- * /filmes:
- *   get:
- *     summary: Retorna todos os filmes
- *     tags: [Filmes]
- *     responses:
- *       200:
- *         description: Lista de filmes retornada com sucesso
+ * Rota GET para retornar todos os filmes cadastrados.
+ *
+ * - Chama o controller `getAll`
+ * - Retorna um array de objetos contendo informações dos filmes
+ * - Resposta 200 em caso de sucesso
  */
 router.get("/", getAll);
 
 /**
- * @swagger
- * /filmes/{id}:
- *   get:
- *     summary: Retorna um filme pelo ID
- *     tags: [Filmes]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: ID do filme
- *     responses:
- *       200:
- *         description: Filme encontrado
- *       404:
- *         description: Filme não encontrado
+ * Rota GET para buscar um filme específico pelo seu ID.
+ *
+ * - Chama o controller `getById`
+ * - O parâmetro `id` é obrigatório na URL
+ * - Retorna o filme correspondente se existir (200)
+ * - Retorna 404 se o filme não for encontrado
  */
 router.get("/:id", getById);
 
 /**
- * @swagger
- * /filmes:
- *   post:
- *     summary: Cria um novo filme
- *     tags: [Filmes]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               titulo:
- *                 type: string
- *               genero:
- *                 type: string
- *               duracao:
- *                 type: integer
- *     responses:
- *       201:
- *         description: Filme criado com sucesso
- *       400:
- *         description: Dados inválidos
+ * Rota POST para cadastrar um novo filme.
+ *
+ * - Chama o controller `create`
+ * - Recebe no corpo (body): `titulo`, `genero`, `duracao`
+ * - Valida os dados antes de criar o registro
+ * - Retorna 201 se o filme for criado com sucesso
+ * - Retorna 400 em caso de erro de validação
  */
 router.post("/", create);
 
 /**
- * @swagger
- * /filmes/{id}:
- *   put:
- *     summary: Atualiza um filme existente
- *     tags: [Filmes]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               titulo:
- *                 type: string
- *               genero:
- *                 type: string
- *               duracao:
- *                 type: integer
- *     responses:
- *       200:
- *         description: Filme atualizado
- *       404:
- *         description: Filme não encontrado
+ * Rota PUT para atualizar um filme existente.
+ *
+ * - Chama o controller `update`
+ * - O parâmetro `id` é obrigatório na URL
+ * - O corpo (body) pode conter os campos a atualizar: `titulo`, `genero`, `duracao`
+ * - Retorna 200 se a atualização for bem-sucedida
+ * - Retorna 404 se o filme não existir
  */
 router.put("/:id", update);
 
 /**
- * @swagger
- * /filmes/{id}:
- *   delete:
- *     summary: Remove um filme pelo ID
- *     tags: [Filmes]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       204:
- *         description: Filme deletado com sucesso
- *       404:
- *         description: Filme não encontrado
+ * Rota DELETE para remover um filme pelo seu ID.
+ *
+ * - Chama o controller `remove`
+ * - O parâmetro `id` é obrigatório na URL
+ * - Remove o filme permanentemente se existir
+ * - Retorna 204 em caso de sucesso, ou 404 se não for encontrado
  */
 router.delete("/:id", remove);
 
