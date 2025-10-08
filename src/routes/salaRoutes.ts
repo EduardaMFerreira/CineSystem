@@ -1,7 +1,7 @@
 import { Router } from "express";
 import * as salaController from "../controllers/salaController";
 
-const router = Router();
+const router = Router(); // Cria instância de rotas
 
 /**
  * @swagger
