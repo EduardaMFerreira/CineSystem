@@ -1,8 +1,4 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// Arquivo de definição do banco com Prisma ORM
 
 generator client {
   provider = "prisma-client-js"
@@ -13,6 +9,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Modelo de Filme
 model Filme {
   id       Int      @id @default(autoincrement())
   titulo   String
@@ -21,6 +18,7 @@ model Filme {
   sessoes  Sessao[]
 }
 
+// Modelo de Sala
 model Sala {
   id        Int      @id @default(autoincrement())
   nome      String
@@ -28,12 +26,14 @@ model Sala {
   sessoes   Sessao[]
 }
 
+// Modelo de Sessão
 model Sessao {
   id      Int      @id @default(autoincrement())
   horario DateTime
   filmeId Int
-  salaId  Int
+  salaId  Int 
 
+// Relações chaves estrangeiras
   filme   Filme @relation(fields: [filmeId], references: [id])
   sala    Sala  @relation(fields: [salaId], references: [id])
 }
