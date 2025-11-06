@@ -1,8 +1,9 @@
-import { Request, Response } from "express";
-import * as salaService from "../services/salaService";
+import { Request, Response } from "express"; // Tipos do Express
+import * as salaService from "../services/salaService"; // Funções de acesso ao banco
 import { createSalaSchema, updateSalaSchema, salaResponseSchema } from "../schemas/salaSchema";
-import { z } from "zod";
+import { z } from "zod"; // Biblioteca de validação
 
+// Buscar todas as salas
 export const getAll = async (req: Request, res: Response) => {
   try {
     const salas = await salaService.getAllSalas();
@@ -14,7 +15,7 @@ export const getAll = async (req: Request, res: Response) => {
   }
 };
 
-
+// Buscar sala por ID
 export const getById = async (req: Request, res: Response) => {
   try {
     const id = Number(req.params.id);
@@ -27,6 +28,7 @@ export const getById = async (req: Request, res: Response) => {
   }
 };
 
+// Criar nova sala
 export const create = async (req: Request, res: Response) => {
   const parsed = createSalaSchema.safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ errors: parsed.error.errors });
@@ -35,6 +37,7 @@ export const create = async (req: Request, res: Response) => {
   res.status(201).json(salaResponseSchema.parse(sala));
 };
 
+// Atualizar sala existente
 export const update = async (req: Request, res: Response) => {
   const id = Number(req.params.id);
   const parsed = updateSalaSchema.safeParse(req.body);
@@ -50,6 +53,7 @@ export const update = async (req: Request, res: Response) => {
   }
 };
 
+// Remover sala por ID
 export const remove = async (req: Request, res: Response) => {
   const id = Number(req.params.id);
 
