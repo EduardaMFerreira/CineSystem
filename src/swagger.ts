@@ -1,33 +1,30 @@
 import swaggerUi from "swagger-ui-express";
 import swaggerJSDoc from "swagger-jsdoc";
+import path from "path";
 
 /**
  * Configuração do Swagger (OpenAPI 3.0) para a API de Cinema
  */
 const options = {
   definition: {
-    openapi: "3.0.0", // Versão do padrão OpenAPI
+    openapi: "3.0.0",
     info: {
-      title: "🎬 API - Sistema de Cinema", // Título exibido na documentação
-      version: "1.0.0",                   // Versão da API
-      description: "Documentação da API de Cinema (Filmes, Salas e Sessões)", // Descrição geral
+      title: "🎬 API - Sistema de Cinema",
+      version: "1.0.0",
+      description: "Documentação da API de Cinema (Filmes, Salas e Sessões)",
     },
     servers: [
       {
-        url: "http://localhost:3000", // URL base da API
+        url: "http://localhost:3000",
       },
     ],
   },
-  // Arquivos onde estão os comentários Swagger nas rotas
-  apis: ["./src/routes/*.ts"],
+  // Caminho absoluto para garantir que o Swagger encontre os arquivos
+  apis: [path.join(__dirname, "routes/*.ts")],
 };
 
-// Gera a especificação Swagger a partir das configurações acima
+// Gera a especificação Swagger a partir das configurações
 const swaggerSpec = swaggerJSDoc(options);
 
-/**
- * Exporta o Swagger UI e a especificação gerada
- * - `swaggerUi` → middleware que fornece a interface web interativa
- * - `swaggerSpec` → JSON usado pelo Swagger UI para exibir a documentação
- */
+// Exporta os objetos necessários
 export { swaggerUi, swaggerSpec };
