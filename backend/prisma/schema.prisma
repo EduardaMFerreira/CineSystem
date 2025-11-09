@@ -1,5 +1,3 @@
-// Arquivo de definição do banco com Prisma ORM
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,19 +9,19 @@ datasource db {
 
 // Modelo de Filme
 model Filme {
-  id       Int      @id @default(autoincrement())
-  titulo   String
-  genero   String
-  duracao  Int
-  sessoes  Sessao[]
+  id      Int      @id @default(autoincrement())
+  titulo  String
+  genero  String
+  duracao Int
+  sessoes Sessao[]
 }
 
 // Modelo de Sala
 model Sala {
-  id        Int      @id @default(autoincrement())
-  nome      String
+  id         Int      @id @default(autoincrement())
+  nome       String
   capacidade Int
-  sessoes   Sessao[]
+  sessoes    Sessao[]
 }
 
 // Modelo de Sessão
@@ -31,9 +29,7 @@ model Sessao {
   id      Int      @id @default(autoincrement())
   horario DateTime
   filmeId Int
-  salaId  Int 
-
-// Relações chaves estrangeiras
-  filme   Filme @relation(fields: [filmeId], references: [id])
-  sala    Sala  @relation(fields: [salaId], references: [id])
+  salaId  Int
+  filme   Filme    @relation(fields: [filmeId], references: [id])
+  sala    Sala     @relation(fields: [salaId], references: [id])
 }
