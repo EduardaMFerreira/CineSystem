@@ -4,13 +4,6 @@ import * as sessaoController from "../controllers/sessaoController";
 const router = Router();
 
 /**
- * Tag do Swagger para agrupar os endpoints de Sessões.
- * 
- * - name: nome do grupo
- * - description: descrição geral do grupo de rotas
- */
- 
-/**
  * @swagger
  * tags:
  *   name: Sessoes
@@ -18,48 +11,114 @@ const router = Router();
  */
 
 /**
- * Rota GET para retornar todas as sessões.
- * 
- * - Chama o controller `getAll`
- * - Retorna um array de sessões no formato definido pelo schema
+ * @swagger
+ * /sessoes:
+ *   get:
+ *     summary: Retorna todas as sessões
+ *     tags: [Sessoes]
+ *     responses:
+ *       200:
+ *         description: Lista de sessões retornada com sucesso
  */
 router.get("/", sessaoController.getAll);
 
 /**
- * Rota GET para retornar uma sessão específica pelo ID.
- * 
- * - Chama o controller `getById`
- * - Parâmetro `id` obrigatório na URL
- * - Retorna 200 se encontrada, 404 caso contrário
+ * @swagger
+ * /sessoes/{id}:
+ *   get:
+ *     summary: Retorna uma sessão pelo ID
+ *     tags: [Sessoes]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Sessão encontrada
+ *       404:
+ *         description: Sessão não encontrada
  */
 router.get("/:id", sessaoController.getById);
 
 /**
- * Rota POST para criar uma nova sessão.
- * 
- * - Chama o controller `create`
- * - Recebe no body: `horario`, `filmeId` e `salaId`
- * - Valida os dados antes de criar
- * - Retorna 201 se criada com sucesso, 400 se houver erro de validação
+ * @swagger
+ * /sessoes:
+ *   post:
+ *     summary: Cria uma nova sessão
+ *     tags: [Sessoes]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               horario:
+ *                 type: string
+ *               filmeId:
+ *                 type: integer
+ *               salaId:
+ *                 type: integer
+ *     responses:
+ *       201:
+ *         description: Sessão criada com sucesso
+ *       400:
+ *         description: Erro de validação
  */
 router.post("/", sessaoController.create);
 
 /**
- * Rota PUT para atualizar uma sessão existente pelo ID.
- * 
- * - Chama o controller `update`
- * - Parâmetro `id` obrigatório na URL
- * - Recebe no body os campos a atualizar (`horario`, `filmeId`, `salaId`)
- * - Retorna 200 se atualizado com sucesso, 404 se não existir
+ * @swagger
+ * /sessoes/{id}:
+ *   put:
+ *     summary: Atualiza uma sessão existente
+ *     tags: [Sessoes]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               horario:
+ *                 type: string
+ *               filmeId:
+ *                 type: integer
+ *               salaId:
+ *                 type: integer
+ *     responses:
+ *       200:
+ *         description: Sessão atualizada
+ *       404:
+ *         description: Sessão não encontrada
  */
 router.put("/:id", sessaoController.update);
 
 /**
- * Rota DELETE para remover uma sessão pelo ID.
- * 
- * - Chama o controller `remove`
- * - Parâmetro `id` obrigatório na URL
- * - Retorna 204 se removida com sucesso, 404 se não existir
+ * @swagger
+ * /sessoes/{id}:
+ *   delete:
+ *     summary: Remove uma sessão
+ *     tags: [Sessoes]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       204:
+ *         description: Sessão removida com sucesso
+ *       404:
+ *         description: Sessão não encontrada
  */
 router.delete("/:id", sessaoController.remove);
 

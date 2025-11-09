@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,18 +8,18 @@ datasource db {
 }
 
 model Filme {
-  id       Int      @id @default(autoincrement())
-  titulo   String
-  genero   String
-  duracao  Int
-  sessoes  Sessao[]
+  id      Int      @id @default(autoincrement())
+  titulo  String
+  genero  String
+  duracao Int
+  sessoes Sessao[]
 }
 
 model Sala {
-  id        Int      @id @default(autoincrement())
-  nome      String
+  id         Int      @id @default(autoincrement())
+  nome       String
   capacidade Int
-  sessoes   Sessao[]
+  sessoes    Sessao[]
 }
 
 model Sessao {
@@ -33,7 +27,6 @@ model Sessao {
   horario DateTime
   filmeId Int
   salaId  Int
-
-  filme   Filme @relation(fields: [filmeId], references: [id])
-  sala    Sala  @relation(fields: [salaId], references: [id])
+  filme   Filme    @relation(fields: [filmeId], references: [id])
+  sala    Sala     @relation(fields: [salaId], references: [id])
 }
