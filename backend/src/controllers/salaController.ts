@@ -31,7 +31,7 @@ export const getById = async (req: Request, res: Response) => {
 // Criar nova sala
 export const create = async (req: Request, res: Response) => {
   const parsed = createSalaSchema.safeParse(req.body);
-  if (!parsed.success) return res.status(400).json({ errors: parsed.error.errors });
+  if (!parsed.success) return res.status(400).json({ errors: parsed.error.issues });
 
   const sala = await salaService.createSala(parsed.data);
   res.status(201).json(salaResponseSchema.parse(sala));
@@ -41,7 +41,7 @@ export const create = async (req: Request, res: Response) => {
 export const update = async (req: Request, res: Response) => {
   const id = Number(req.params.id);
   const parsed = updateSalaSchema.safeParse(req.body);
-  if (!parsed.success) return res.status(400).json({ errors: parsed.error.errors });
+  if (!parsed.success) return res.status(400).json({ errors: parsed.error.issues });
 
   try {
     const salaAtualizada = await salaService.updateSala(id, parsed.data);

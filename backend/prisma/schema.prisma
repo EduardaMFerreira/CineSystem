@@ -9,11 +9,12 @@ datasource db {
 
 // Modelo de Filme
 model Filme {
-  id      Int      @id @default(autoincrement())
-  titulo  String
-  genero  String
-  duracao Int
-  sessoes Sessao[]
+  id        Int       @id @default(autoincrement())
+  titulo    String
+  genero    String
+  duracao   Int
+  bannerUrl String
+  sessoes   Sessao[]
 }
 
 // Modelo de Sala
@@ -26,10 +27,33 @@ model Sala {
 
 // Modelo de Sessão
 model Sessao {
-  id      Int      @id @default(autoincrement())
-  horario DateTime
-  filmeId Int
-  salaId  Int
-  filme   Filme    @relation(fields: [filmeId], references: [id])
-  sala    Sala     @relation(fields: [salaId], references: [id])
+  id       Int       @id @default(autoincrement())
+  horario  DateTime
+  filmeId  Int
+  salaId   Int
+  filme    Filme     @relation(fields: [filmeId], references: [id])
+  sala     Sala      @relation(fields: [salaId], references: [id])
+  reservas Reserva[]
 }
+
+// Modelo de User
+model User {
+  id        Int      @id @default(autoincrement())
+  nome      String
+  email     String   @unique
+  senha     String
+  reservas  Reserva[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Modelo de Reserva
+model Reserva {
+  id        Int      @id @default(autoincrement())
+  usuario   User     @relation(fields: [usuarioId], references: [id])
+  usuarioId Int
+  sessao    Sessao   @relation(fields: [sessaoId], references: [id])
+  sessaoId  Int
+  createdAt DateTime @default(now())
+}
+

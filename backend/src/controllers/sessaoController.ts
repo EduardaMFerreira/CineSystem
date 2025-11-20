@@ -16,10 +16,9 @@ export const getAll = async (req: Request, res: Response) => {
 
     const sessoesFormatadas = sessoesArray.map(sessao => ({
       ...sessao,
-      horario: sessao.horario.toISOString(), // Converte Date para string ISO
+      horario: sessao.horario.toISOString(),
     }));
 
-    // Valida a resposta antes de enviar ao cliente
     const response = z.array(sessaoResponseSchema).parse(sessoesFormatadas);
     res.json(response);
   } catch (error: any) {
@@ -29,10 +28,6 @@ export const getAll = async (req: Request, res: Response) => {
 
 /**
  * Retorna uma sessão específica pelo ID.
- * 
- * - Valida se o ID existe
- * - Converte o horário para string ISO
- * - Retorna erro 404 se a sessão não for encontrada
  */
 export const getById = async (req: Request, res: Response) => {
   try {
@@ -49,14 +44,10 @@ export const getById = async (req: Request, res: Response) => {
 
 /**
  * Cria uma nova sessão no sistema.
- * 
- * - Valida os dados da requisição com Zod
- * - Retorna erro 400 se os dados forem inválidos
- * - Retorna erro 500 em caso de falha no serviço
  */
 export const create = async (req: Request, res: Response) => {
   const parsed = createSessaoSchema.safeParse(req.body);
-  if (!parsed.success) return res.status(400).json({ errors: parsed.error.errors });
+  if (!parsed.success) return res.status(400).json({ errors: parsed.error.issues });
 
   try {
     const novaSessao = await sessaoService.createSessao(parsed.data);
@@ -69,15 +60,11 @@ export const create = async (req: Request, res: Response) => {
 
 /**
  * Atualiza uma sessão existente pelo ID.
- * 
- * - Valida dados parciais enviados na requisição
- * - Retorna erro 404 se a sessão não existir
- * - Retorna erro 400 se os dados forem inválidos
  */
 export const update = async (req: Request, res: Response) => {
   const id = Number(req.params.id);
   const parsed = updateSessaoSchema.safeParse(req.body);
-  if (!parsed.success) return res.status(400).json({ errors: parsed.error.errors });
+  if (!parsed.success) return res.status(400).json({ errors: parsed.error.issues });
 
   try {
     const sessaoAtualizada = await sessaoService.updateSessao(id, parsed.data);
@@ -92,9 +79,6 @@ export const update = async (req: Request, res: Response) => {
 
 /**
  * Remove uma sessão existente pelo ID.
- * 
- * - Retorna 404 se a sessão não existir
- * - Retorna 204 (No Content) quando a exclusão é bem-sucedida
  */
 export const remove = async (req: Request, res: Response) => {
   const id = Number(req.params.id);

@@ -1,52 +1,37 @@
 import express, { Express, Request, Response } from "express";
+import path from "path"; // <- necessário para arquivos estáticos
 import salaRoutes from "./routes/salaRoutes";
 import filmeRoutes from "./routes/filmeRoutes";
-import sessaoRoutes from "./routes/sessaoRoutes"; 
+import sessaoRoutes from "./routes/sessaoRoutes";
+import authRoutes from "./routes/authRoutes";
+import reservaRoutes from "./routes/reservaRoutes";
+import userRoutes from "./routes/userRoutes";
 import { swaggerUi, swaggerSpec } from "./swagger";
 
 const app: Express = express();
 const port: number = 3000;
 
-// Middleware para interpretar requisições JSON
 app.use(express.json());
 
-/**
- * Rota do Swagger para documentação da API.
- *
- * - URL: /api-docs
- * - Utiliza `swaggerUi.serve` e `swaggerUi.setup` para servir a interface Swagger
- * - Permite visualizar todas as rotas, parâmetros e schemas definidos
- */
+// Servir arquivos estáticos da pasta uploads
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+// Swagger
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-/**
- * Rota base da API.
- *
- * - URL: /
- * - Método: GET
- * - Retorna uma mensagem simples indicando que a API está rodando
- */
+// Rota base
 app.get("/", (req: Request, res: Response) => {
   res.send("API de Cinema está rodando 🎬");
 });
 
-/**
- * Rotas principais da aplicação.
- *
- * - `/salas` → rotas relacionadas a salas de cinema (CRUD)
- * - `/filmes` → rotas relacionadas a filmes (CRUD)
- * - `/sessoes` → rotas relacionadas a sessões de cinema (CRUD)
- */
+// Rotas da aplicação
 app.use("/salas", salaRoutes);
 app.use("/filmes", filmeRoutes);
 app.use("/sessoes", sessaoRoutes);
+app.use("/auth", authRoutes);
+app.use("/reservas", reservaRoutes);
+app.use("/users", userRoutes);
 
-/**
- * Inicializa o servidor Express.
- *
- * - Porta definida em `port`
- * - Mostra no console que o servidor está rodando e o link do Swagger
- */
 app.listen(port, () => {
   console.log(`🚀 Servidor rodando na porta ${port}`);
   console.log(`📘 Swagger disponível em: http://localhost:${port}/api-docs`);

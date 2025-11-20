@@ -11,20 +11,25 @@ const options = {
     info: {
       title: "🎬 API - Sistema de Cinema",
       version: "1.0.0",
-      description: "Documentação da API de Cinema (Filmes, Salas e Sessões)",
+      description:
+        "Documentação da API de Cinema (Filmes, Salas, Sessões, Autenticação e Reservas)",
     },
-    servers: [
-      {
-        url: "http://localhost:3000",
+    servers: [{ url: "http://localhost:3000" }],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
       },
-    ],
+    },
   },
-  // Caminho absoluto para garantir que o Swagger encontre os arquivos
-  apis: [path.join(__dirname, "routes/*.ts")],
+
+  // Agora funciona independente de build/diretório
+  apis: ["./src/routes/*.ts"],
 };
 
-// Gera a especificação Swagger a partir das configurações
 const swaggerSpec = swaggerJSDoc(options);
 
-// Exporta os objetos necessários
 export { swaggerUi, swaggerSpec };
