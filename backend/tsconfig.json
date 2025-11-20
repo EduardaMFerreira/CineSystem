@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
-    "target": "es6", // Define a versão do JavaScript que o TS vai gerar
-    "module": "commonjs", // Sistema de módulos usado pelo Node.js
-    "rootDir": "./src", // Pasta raiz do código-fonte
-    "outDir": "./dist", // Pasta onde o código compilado será gerado
-    "esModuleInterop": true, // Habilita compatibilidade com import/export do Node
-    "forceConsistentCasingInFileNames": true, // Evita erros de maiúsculas/minúsculas nos imports
-    "strict": true, // Ativa todas as verificações estritas de tipos
-    "skipLibCheck": true // Ignora checagem de tipos em bibliotecas externas
+    "target": "es6",
+    "module": "commonjs",
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "typeRoots": ["./src/@types", "./node_modules/@types"]
   }
 }

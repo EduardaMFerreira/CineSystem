@@ -54,6 +54,11 @@ router.get("/:id", getById);
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - titulo
+ *               - genero
+ *               - duracao
+ *               - bannerUrl
  *             properties:
  *               titulo:
  *                 type: string
@@ -61,6 +66,9 @@ router.get("/:id", getById);
  *                 type: string
  *               duracao:
  *                 type: number
+ *               bannerUrl:
+ *                 type: string
+ *                 description: URL obrigatória do banner do filme
  *     responses:
  *       201:
  *         description: Filme criado com sucesso
@@ -87,6 +95,8 @@ router.post("/", create);
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - bannerUrl
  *             properties:
  *               titulo:
  *                 type: string
@@ -94,9 +104,14 @@ router.post("/", create);
  *                 type: string
  *               duracao:
  *                 type: number
+ *               bannerUrl:
+ *                 type: string
+ *                 description: URL obrigatória do banner do filme
  *     responses:
  *       200:
  *         description: Filme atualizado
+ *       400:
+ *         description: Dados inválidos
  *       404:
  *         description: Filme não encontrado
  */
