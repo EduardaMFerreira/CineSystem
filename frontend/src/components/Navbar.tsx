@@ -38,7 +38,6 @@ export default function Navbar({ darkMode, toggleDarkMode, handleLogout, isLogge
     { label: "PERFIL", path: "/perfil", requiresAuth: true },
   ];
 
-  // 🔥 Função para lidar com cliques protegidos
   const handleNavClick = (item: any) => {
     if (item.requiresAuth && !isLogged) {
       navigate("/login");
@@ -53,15 +52,14 @@ export default function Navbar({ darkMode, toggleDarkMode, handleLogout, isLogge
       <AppBar
         position="static"
         sx={{
-          backgroundColor: "#FFFFFF",
-          color: "#5A0C07",
+          backgroundColor: (theme) => theme.palette.background.paper,
+          color: (theme) => theme.palette.text.primary,
           boxShadow: "0px 2px 10px rgba(0,0,0,0.1)",
-          paddingY: 1,
-          padding: "0.5rem 1rem",
+          py: 1,
+          px: 2,
         }}
       >
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-          
           {/* LOGO */}
           <Typography
             variant="h5"
@@ -70,7 +68,7 @@ export default function Navbar({ darkMode, toggleDarkMode, handleLogout, isLogge
             sx={{
               textDecoration: "none",
               fontWeight: "bold",
-              color: "#5A0C07",
+              color: (theme) => theme.palette.primary.main,
               fontSize: "1.8rem",
             }}
           >
@@ -82,22 +80,25 @@ export default function Navbar({ darkMode, toggleDarkMode, handleLogout, isLogge
             <Stack direction="row" spacing={3} alignItems="center">
               {navItems.map((item) => {
                 const active = location.pathname === item.path;
-
                 return (
                   <Button
                     key={item.path}
                     onClick={() => handleNavClick(item)}
                     sx={{
-                      color: active ? "#5A0C07" : "#555",
+                      color: active
+                        ? (theme) => theme.palette.primary.main
+                        : (theme) => theme.palette.text.secondary,
                       fontWeight: active ? "bold" : "normal",
                       fontSize: "1rem",
                       letterSpacing: 1.5,
                       position: "relative",
-                      paddingBottom: "6px",
+                      pb: "6px",
                       transition: "0.2s",
                       "&:hover": {
                         backgroundColor: "transparent",
-                        color: active ? "#5A0C07" : "#333",
+                        color: active
+                          ? (theme) => theme.palette.primary.main
+                          : (theme) => theme.palette.text.primary,
                       },
                       "&::after": active
                         ? {
@@ -109,7 +110,7 @@ export default function Navbar({ darkMode, toggleDarkMode, handleLogout, isLogge
                             width: "40%",
                             height: "3px",
                             borderRadius: "2px",
-                            backgroundColor: "#5A0C07",
+                            backgroundColor: (theme) => theme.palette.primary.main,
                           }
                         : {},
                     }}
@@ -122,36 +123,34 @@ export default function Navbar({ darkMode, toggleDarkMode, handleLogout, isLogge
           )}
 
           {/* ÍCONES + MOBILE */}
-          <Stack direction="row" spacing={2} alignItems="center">
+          <Stack direction="row" spacing={1} alignItems="center">
             <IconButton
               onClick={toggleDarkMode}
               sx={{
-                color: "#5A0C07",
-                backgroundColor: "#F2EDEC",
-                "&:hover": { backgroundColor: "#E6D7D7" },
+                color: (theme) => theme.palette.text.primary,
+                backgroundColor: (theme) => theme.palette.secondary.main,
+                "&:hover": { backgroundColor: (theme) => theme.palette.secondary.dark },
               }}
             >
               {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
             </IconButton>
 
-            {/* SAIR só aparece se logado */}
             {isLogged && (
               <IconButton
                 onClick={handleLogout}
                 sx={{
-                  color: "#5A0C07",
-                  backgroundColor: "#F2EDEC",
-                  "&:hover": { backgroundColor: "#E6D7D7" },
+                  color: (theme) => theme.palette.text.primary,
+                  backgroundColor: (theme) => theme.palette.secondary.main,
+                  "&:hover": { backgroundColor: (theme) => theme.palette.secondary.dark },
                 }}
               >
                 <LogoutIcon />
               </IconButton>
             )}
 
-            {/* ÍCONE DO MENU HAMBÚRGUER (MOBILE) */}
             {isMobile && (
               <IconButton
-                sx={{ color: "#5A0C07"}}
+                sx={{ color: (theme) => theme.palette.text.primary }}
                 onClick={() => setOpenDrawer(true)}
               >
                 <MenuIcon />
@@ -166,27 +165,30 @@ export default function Navbar({ darkMode, toggleDarkMode, handleLogout, isLogge
         <Box
           sx={{
             width: 250,
-            padding: "1rem",
+            p: 2,
             display: "flex",
             flexDirection: "column",
             gap: 2,
+            backgroundColor: (theme) => theme.palette.background.paper,
+            minHeight: "100%",
           }}
         >
           {navItems.map((item) => {
             const active = location.pathname === item.path;
-
             return (
               <Button
                 key={item.path}
                 onClick={() => handleNavClick(item)}
                 sx={{
                   justifyContent: "flex-start",
-                  color: active ? "#5A0C07" : "#444",
+                  color: active
+                    ? (theme) => theme.palette.primary.main
+                    : (theme) => theme.palette.text.primary,
                   fontWeight: active ? "bold" : "normal",
                   fontSize: "1.1rem",
                   "&:hover": {
                     backgroundColor: "transparent",
-                    color: "#5A0C07",
+                    color: (theme) => theme.palette.primary.main,
                   },
                 }}
               >
