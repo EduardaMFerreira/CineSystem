@@ -1,9 +1,11 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState } from "react";
-import Layout from "./layout/Layout";
+import { ThemeProvider, CssBaseline } from "@mui/material";
 
+import Layout from "./layout/Layout";
 import Home from "./pages/Home";
 import Login from "./components/Login";
+import { lightTheme, darkTheme } from "./theme/theme";
 
 export default function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -22,18 +24,21 @@ export default function App() {
   }
 
   return (
-    <BrowserRouter>
-      <Layout
-        darkMode={darkMode}
-        toggleDarkMode={toggleDarkMode}
-        isLogged={isLogged}
-        handleLogout={handleLogout}
-      >
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login onLogin={handleLogin} />} />
-        </Routes>
-      </Layout>
-    </BrowserRouter>
+    <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
+      <CssBaseline /> {/* Aplica cores do tema globalmente */}
+      <BrowserRouter>
+        <Layout
+          darkMode={darkMode}
+          toggleDarkMode={toggleDarkMode}
+          isLogged={isLogged}
+          handleLogout={handleLogout}
+        >
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login onLogin={handleLogin} />} />
+          </Routes>
+        </Layout>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
