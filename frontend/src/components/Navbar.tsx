@@ -55,14 +55,13 @@ export default function Navbar({ darkMode, toggleDarkMode, handleLogout, isLogge
           backgroundColor: (theme) => theme.palette.background.paper,
           color: (theme) => theme.palette.text.primary,
           boxShadow: "0px 2px 10px rgba(0,0,0,0.1)",
-          py: 1,
           px: 2,
         }}
       >
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
           {/* LOGO */}
           <Typography
-            variant="h5"
+            variant="h6"
             component={Link}
             to="/"
             sx={{
@@ -88,8 +87,8 @@ export default function Navbar({ darkMode, toggleDarkMode, handleLogout, isLogge
                       color: active
                         ? (theme) => theme.palette.primary.main
                         : (theme) => theme.palette.text.secondary,
-                      fontWeight: active ? "bold" : "normal",
-                      fontSize: "1rem",
+                      fontWeight: active ? "bold" : "semi-bold",
+                      fontSize: "0.8rem",
                       letterSpacing: 1.5,
                       position: "relative",
                       pb: "6px",
