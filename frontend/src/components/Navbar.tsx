@@ -31,7 +31,7 @@ export default function Navbar({ darkMode, toggleDarkMode, handleLogout, isLogge
   const isMobile = useMediaQuery("(max-width: 768px)");
 
   const navItems = [
-    { label: "HOME", path: "/" },
+    { label: "HOME", path: "/home" },
     { label: "FILMES", path: "/filmes" },
     { label: "RESERVAS", path: "/reservas", requiresAuth: true },
     { label: "CONTATO", path: "/contato" },

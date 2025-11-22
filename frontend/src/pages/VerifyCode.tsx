@@ -1,16 +1,13 @@
 import { Box, Button, TextField, Typography, Container, Link, Alert } from "@mui/material";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { loginRequest } from "../services/authService";
+import { useNavigate, useLocation } from "react-router-dom";
+import { verifyCodeRequest } from "../services/authService";
 
-interface LoginProps {
-  onLogin?: () => void;
-}
-
-export default function Login({ onLogin }: LoginProps) {
+export default function VerifyCode() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
+  const location = useLocation();
+  const email = location.state?.email || "";
+  const [codigo, setCodigo] = useState("");
   const [erro, setErro] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -20,26 +17,10 @@ export default function Login({ onLogin }: LoginProps) {
     setLoading(true);
 
     try {
-      const data = await loginRequest(email, senha);
-      if (data && data.token) {
-        localStorage.setItem("token", data.token);
-        if (onLogin) onLogin();
-        navigate("/post-login");
-      } else {
-        setErro("Resposta inválida do servidor");
-      }
+      const response = await verifyCodeRequest(email, codigo);
+      navigate("/reset-password", { state: { email, token: response.token } });
     } catch (error: any) {
-      console.error("Erro no login:", error);
-      if (error.response) {
-        // Erro com resposta do servidor
-        setErro(error.response.data?.message || "Erro ao fazer login");
-      } else if (error.request) {
-        // Erro de rede (servidor não respondeu)
-        setErro("Erro de conexão. Verifique se o servidor está rodando.");
-      } else {
-        // Outro tipo de erro
-        setErro(error.message || "Erro ao fazer login");
-      }
+      setErro(error.response?.data?.message || "Código inválido");
     } finally {
       setLoading(false);
     }
@@ -61,27 +42,23 @@ export default function Login({ onLogin }: LoginProps) {
         }}
       >
         <Typography variant="h4" fontWeight={700} color="primary.main" align="center">
-          Login
+          Verificar Código
+        </Typography>
+
+        <Typography variant="body2" align="center" color="text.secondary">
+          Digite o código de verificação enviado para seu email.
         </Typography>
 
         {erro && <Alert severity="error">{erro}</Alert>}
 
         <TextField
-          label="Email"
-          type="email"
+          label="Código de Verificação"
+          type="text"
           fullWidth
           required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-
-        <TextField
-          label="Senha"
-          type="password"
-          fullWidth
-          required
-          value={senha}
-          onChange={(e) => setSenha(e.target.value)}
+          value={codigo}
+          onChange={(e) => setCodigo(e.target.value)}
+          inputProps={{ maxLength: 6 }}
         />
 
         <Button
@@ -92,7 +69,7 @@ export default function Login({ onLogin }: LoginProps) {
           disabled={loading}
           sx={{ py: 1.5, backgroundColor: "primary.main" }}
         >
-          {loading ? "Entrando..." : "Entrar"}
+          {loading ? "Verificando..." : "Verificar"}
         </Button>
 
         <Box textAlign="center">
@@ -103,7 +80,7 @@ export default function Login({ onLogin }: LoginProps) {
             onClick={() => navigate("/forgot-password")}
             sx={{ cursor: "pointer" }}
           >
-            Esqueceu a senha?
+            Reenviar código
           </Link>
         </Box>
 
@@ -112,13 +89,14 @@ export default function Login({ onLogin }: LoginProps) {
             component="button"
             type="button"
             variant="body2"
-            onClick={() => navigate("/register")}
+            onClick={() => navigate("/login")}
             sx={{ cursor: "pointer" }}
           >
-            Não tem uma conta? Criar conta
+            Voltar para o login
           </Link>
         </Box>
       </Box>
     </Container>
   );
 }
+

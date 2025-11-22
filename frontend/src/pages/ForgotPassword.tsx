@@ -1,17 +1,13 @@
 import { Box, Button, TextField, Typography, Container, Link, Alert } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginRequest } from "../services/authService";
+import { forgotPasswordRequest } from "../services/authService";
 
-interface LoginProps {
-  onLogin?: () => void;
-}
-
-export default function Login({ onLogin }: LoginProps) {
+export default function ForgotPassword() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
   const [erro, setErro] = useState("");
+  const [sucesso, setSucesso] = useState(false);
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -20,29 +16,43 @@ export default function Login({ onLogin }: LoginProps) {
     setLoading(true);
 
     try {
-      const data = await loginRequest(email, senha);
-      if (data && data.token) {
-        localStorage.setItem("token", data.token);
-        if (onLogin) onLogin();
-        navigate("/post-login");
-      } else {
-        setErro("Resposta inválida do servidor");
-      }
+      await forgotPasswordRequest(email);
+      setSucesso(true);
     } catch (error: any) {
-      console.error("Erro no login:", error);
-      if (error.response) {
-        // Erro com resposta do servidor
-        setErro(error.response.data?.message || "Erro ao fazer login");
-      } else if (error.request) {
-        // Erro de rede (servidor não respondeu)
-        setErro("Erro de conexão. Verifique se o servidor está rodando.");
-      } else {
-        // Outro tipo de erro
-        setErro(error.message || "Erro ao fazer login");
-      }
+      setErro(error.response?.data?.message || "Erro ao solicitar recuperação de senha");
     } finally {
       setLoading(false);
     }
+  }
+
+  if (sucesso) {
+    return (
+      <Container maxWidth="sm" sx={{ py: 8 }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 3,
+            bgcolor: "background.paper",
+            p: 4,
+            borderRadius: 2,
+            boxShadow: 2,
+          }}
+        >
+          <Alert severity="success">
+            Um código de verificação foi enviado para seu email!
+          </Alert>
+          <Button
+            variant="contained"
+            fullWidth
+            onClick={() => navigate("/verify-code", { state: { email } })}
+            sx={{ py: 1.5, backgroundColor: "primary.main" }}
+          >
+            Continuar
+          </Button>
+        </Box>
+      </Container>
+    );
   }
 
   return (
@@ -61,7 +71,11 @@ export default function Login({ onLogin }: LoginProps) {
         }}
       >
         <Typography variant="h4" fontWeight={700} color="primary.main" align="center">
-          Login
+          Esqueceu a Senha?
+        </Typography>
+
+        <Typography variant="body2" align="center" color="text.secondary">
+          Digite seu email e enviaremos um código de verificação para redefinir sua senha.
         </Typography>
 
         {erro && <Alert severity="error">{erro}</Alert>}
@@ -75,15 +89,6 @@ export default function Login({ onLogin }: LoginProps) {
           onChange={(e) => setEmail(e.target.value)}
         />
 
-        <TextField
-          label="Senha"
-          type="password"
-          fullWidth
-          required
-          value={senha}
-          onChange={(e) => setSenha(e.target.value)}
-        />
-
         <Button
           type="submit"
           variant="contained"
@@ -92,7 +97,7 @@ export default function Login({ onLogin }: LoginProps) {
           disabled={loading}
           sx={{ py: 1.5, backgroundColor: "primary.main" }}
         >
-          {loading ? "Entrando..." : "Entrar"}
+          {loading ? "Enviando..." : "Enviar Código"}
         </Button>
 
         <Box textAlign="center">
@@ -100,25 +105,14 @@ export default function Login({ onLogin }: LoginProps) {
             component="button"
             type="button"
             variant="body2"
-            onClick={() => navigate("/forgot-password")}
+            onClick={() => navigate("/login")}
             sx={{ cursor: "pointer" }}
           >
-            Esqueceu a senha?
-          </Link>
-        </Box>
-
-        <Box textAlign="center">
-          <Link
-            component="button"
-            type="button"
-            variant="body2"
-            onClick={() => navigate("/register")}
-            sx={{ cursor: "pointer" }}
-          >
-            Não tem uma conta? Criar conta
+            Voltar para o login
           </Link>
         </Box>
       </Box>
     </Container>
   );
 }
+

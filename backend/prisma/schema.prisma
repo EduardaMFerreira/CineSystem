@@ -38,13 +38,15 @@ model Sessao {
 
 // Modelo de User
 model User {
-  id        Int      @id @default(autoincrement())
-  nome      String
-  email     String   @unique
-  senha     String
-  reservas  Reserva[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                 Int       @id @default(autoincrement())
+  nome               String
+  email              String    @unique
+  senha              String
+  resetToken         String?
+  resetTokenExpires  DateTime?
+  reservas           Reserva[]
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
 }
 
 // Modelo de Reserva
