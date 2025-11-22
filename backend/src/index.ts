@@ -1,5 +1,6 @@
 import express, { Express, Request, Response } from "express";
-import path from "path"; // <- necessário para arquivos estáticos
+import cors from "cors"; 
+import path from "path";
 import salaRoutes from "./routes/salaRoutes";
 import filmeRoutes from "./routes/filmeRoutes";
 import sessaoRoutes from "./routes/sessaoRoutes";
@@ -11,10 +12,15 @@ import { swaggerUi, swaggerSpec } from "./swagger";
 const app: Express = express();
 const port: number = 3000;
 
+app.use(cors()); // <-- ESSA LINHA RESOLVE O CORS
+
 app.use(express.json());
 
-// Servir arquivos estáticos da pasta uploads
+// Servir uploads (se usar futuramente)
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+// Servir banners (public/banners)
+app.use("/public", express.static(path.join(__dirname, "..", "public")));
 
 // Swagger
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
@@ -24,7 +30,7 @@ app.get("/", (req: Request, res: Response) => {
   res.send("API de Cinema está rodando 🎬");
 });
 
-// Rotas da aplicação
+// Rotas
 app.use("/salas", salaRoutes);
 app.use("/filmes", filmeRoutes);
 app.use("/sessoes", sessaoRoutes);
