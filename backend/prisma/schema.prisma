@@ -7,7 +7,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Modelo de Filme
+//
+// MODELO FILME
+//
 model Filme {
   id        Int       @id @default(autoincrement())
   titulo    String
@@ -17,7 +19,9 @@ model Filme {
   sessoes   Sessao[]
 }
 
-// Modelo de Sala
+//
+// MODELO SALA
+//
 model Sala {
   id         Int      @id @default(autoincrement())
   nome       String
@@ -25,35 +29,40 @@ model Sala {
   sessoes    Sessao[]
 }
 
-// Modelo de Sessão
+//
+// MODELO SESSÃO
+//
 model Sessao {
-  id       Int       @id @default(autoincrement())
-  horario  DateTime
-  filmeId  Int
-  salaId   Int
-  filme    Filme     @relation(fields: [filmeId], references: [id])
-  sala     Sala      @relation(fields: [salaId], references: [id])
-  reservas Reserva[]
+  id        Int        @id @default(autoincrement())
+  horario   DateTime
+  filmeId   Int
+  salaId    Int
+  filme     Filme      @relation(fields: [filmeId], references: [id])
+  sala      Sala       @relation(fields: [salaId], references: [id])
+  reservas  Reserva[]
 }
 
-// Modelo de User
+//
+// MODELO USUÁRIO
+//
 model User {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   nome      String
-  email     String   @unique
+  email     String    @unique
   senha     String
   reservas  Reserva[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
-// Modelo de Reserva
+//
+// MODELO RESERVA
+//
 model Reserva {
-  id        Int      @id @default(autoincrement())
-  usuario   User     @relation(fields: [usuarioId], references: [id])
+  id        Int       @id @default(autoincrement())
+  usuario   User      @relation(fields: [usuarioId], references: [id])
   usuarioId Int
-  sessao    Sessao   @relation(fields: [sessaoId], references: [id])
+  sessao    Sessao    @relation(fields: [sessaoId], references: [id])
   sessaoId  Int
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
 }
-
