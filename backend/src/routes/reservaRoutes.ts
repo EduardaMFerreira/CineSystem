@@ -1,4 +1,10 @@
 import { Router } from "express";
+import { authMiddleware } from "../middlewares/authMiddleware";
+import {
+  criarReserva,
+  listarMinhasReservas,
+  cancelarReserva,
+} from "../controllers/reservaController";
 
 const router = Router();
 
@@ -6,14 +12,14 @@ const router = Router();
  * @swagger
  * tags:
  *   name: Reservas
- *   description: Rotas de reservas de ingressos
+ *   description: Operações relacionadas a reservas de sessões
  */
 
 /**
  * @swagger
  * /reservas:
  *   post:
- *     summary: Cria uma nova reserva
+ *     summary: Criar uma nova reserva
  *     tags: [Reservas]
  *     security:
  *       - bearerAuth: []
@@ -23,56 +29,61 @@ const router = Router();
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - sessaoId
- *               - quantidade
  *             properties:
  *               sessaoId:
- *                 type: string
+ *                 type: integer
  *                 example: 1
- *               quantidade:
- *                 type: number
- *                 example: 2
  *     responses:
  *       201:
  *         description: Reserva criada com sucesso
+ *       400:
+ *         description: Erro de validação ou regras de negócio
  *       401:
- *         description: Não autorizado
+ *         description: Não autenticado
  */
-router.post("/", (req, res) => {
-  res.send("Criar reserva");
-});
+router.post("/", authMiddleware, criarReserva);
 
 /**
  * @swagger
- * /reservas/minhas:
+ * /reservas:
  *   get:
- *     summary: Retorna as reservas do usuário logado
+ *     summary: Listar reservas do usuário logado
  *     tags: [Reservas]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Lista de reservas do usuário
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   sessaoId:
- *                     type: string
- *                   quantidade:
- *                     type: number
- *                   dataReserva:
- *                     type: string
- *                     example: 2025-11-20T10:00:00Z
  *       401:
- *         description: Não autorizado
+ *         description: Não autenticado
  */
-router.get("/minhas", (req, res) => {
-  res.send("Minhas reservas");
-});
+router.get("/", authMiddleware, listarMinhasReservas);
+
+/**
+ * @swagger
+ * /reservas/{id}:
+ *   delete:
+ *     summary: Cancelar uma reserva do usuário logado
+ *     tags: [Reservas]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: ID da reserva a ser cancelada
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Reserva cancelada com sucesso
+ *       400:
+ *         description: Erro de validação ou reserva não pertence ao usuário
+ *       401:
+ *         description: Não autenticado
+ *       404:
+ *         description: Reserva não encontrada
+ */
+router.delete("/:id", authMiddleware, cancelarReserva);
 
 export default router;
