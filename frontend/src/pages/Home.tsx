@@ -206,6 +206,7 @@ export default function Home() {
                   fullWidth
                   variant="contained"
                   sx={{ mt: 2, backgroundColor: "primary.main" }}
+                  onClick={() => navigate(`/escolher-sessao/${filme.id}`)}
                 >
                   Escolher Sessão
                 </Button>

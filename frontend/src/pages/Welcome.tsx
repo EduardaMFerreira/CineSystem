@@ -24,27 +24,14 @@ export default function Welcome() {
         Sua experiência cinematográfica começa aqui!
       </Typography>
 
-      <Box display="flex" flexDirection="column" gap={2} width="100%" maxWidth="400px">
-        <Button
-          variant="contained"
-          fullWidth
-          size="large"
-          sx={{ py: 1.5, backgroundColor: "primary.main" }}
-          onClick={() => navigate("/login")}
-        >
-          Entrar
-        </Button>
-
-        <Button
-          variant="outlined"
-          fullWidth
-          size="large"
-          sx={{ py: 1.5, borderColor: "primary.main", color: "primary.main" }}
-          onClick={() => navigate("/register")}
-        >
-          Criar Conta
-        </Button>
-      </Box>
+      <Button
+        variant="contained"
+        size="large"
+        sx={{ py: 1.5, px: 4, backgroundColor: "primary.main" }}
+        onClick={() => navigate("/home")}
+      >
+        Explorar Filmes
+      </Button>
     </Container>
   );
 }

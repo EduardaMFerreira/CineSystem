@@ -66,3 +66,7 @@ Após configurar, teste fazendo uma solicitação de recuperação de senha. O c
 
 **Nota**: Se houver erro no envio do email, o código ainda será salvo no banco e aparecerá no console do servidor para desenvolvimento.
 
+
+
+
+

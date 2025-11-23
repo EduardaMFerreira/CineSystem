@@ -15,6 +15,8 @@ import Filmes from "./pages/Filmes";
 import Reservas from "./pages/Reservas";
 import Contato from "./pages/Contato";
 import Perfil from "./pages/Perfil";
+import EscolherSessao from "./pages/EscolherSessao";
+import ReservasProtected from "./components/ReservasProtected";
 import { lightTheme, darkTheme } from "./theme/theme";
 
 export default function App() {
@@ -23,8 +25,19 @@ export default function App() {
 
   useEffect(() => {
     // Verifica se há token no localStorage ao carregar
-    const token = localStorage.getItem("token");
-    setIsLogged(!!token);
+    const checkAuth = () => {
+      const token = localStorage.getItem("token");
+      setIsLogged(!!token);
+    };
+
+    checkAuth();
+
+    // Listener para mudanças no localStorage (entre abas)
+    window.addEventListener("storage", checkAuth);
+
+    return () => {
+      window.removeEventListener("storage", checkAuth);
+    };
   }, []);
 
   function toggleDarkMode() {
@@ -39,17 +52,6 @@ export default function App() {
     localStorage.removeItem("token");
     setIsLogged(false);
   }
-
-  // Rotas que não devem ter Layout (navbar/footer)
-  const authRoutes = [
-    "/welcome",
-    "/login",
-    "/register",
-    "/forgot-password",
-    "/verify-code",
-    "/reset-password",
-    "/post-login",
-  ];
 
   return (
     <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
@@ -101,7 +103,9 @@ export default function App() {
                 isLogged={isLogged}
                 handleLogout={handleLogout}
               >
-                <Reservas />
+                <ReservasProtected isLogged={isLogged}>
+                  <Reservas />
+                </ReservasProtected>
               </Layout>
             }
           />
@@ -128,6 +132,19 @@ export default function App() {
                 handleLogout={handleLogout}
               >
                 <Perfil />
+              </Layout>
+            }
+          />
+          <Route
+            path="/escolher-sessao/:filmeId"
+            element={
+              <Layout
+                darkMode={darkMode}
+                toggleDarkMode={toggleDarkMode}
+                isLogged={isLogged}
+                handleLogout={handleLogout}
+              >
+                <EscolherSessao />
               </Layout>
             }
           />

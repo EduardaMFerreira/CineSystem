@@ -84,10 +84,6 @@ export default function Register() {
           Criar Conta
         </Typography>
 
-        <Typography variant="body2" align="center" color="text.secondary">
-          Preencha os dados abaixo para criar sua conta
-        </Typography>
-
         {erro && <Alert severity="error">{erro}</Alert>}
 
         <TextField

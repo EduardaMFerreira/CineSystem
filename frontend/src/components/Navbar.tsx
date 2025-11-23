@@ -33,7 +33,7 @@ export default function Navbar({ darkMode, toggleDarkMode, handleLogout, isLogge
   const navItems = [
     { label: "HOME", path: "/home" },
     { label: "FILMES", path: "/filmes" },
-    { label: "RESERVAS", path: "/reservas", requiresAuth: true },
+    { label: "RESERVAS", path: "/reservas" }, // Permite acesso, mas mostra mensagem se não autenticado
     { label: "CONTATO", path: "/contato" },
     { label: "PERFIL", path: "/perfil", requiresAuth: true },
   ];
@@ -62,13 +62,14 @@ export default function Navbar({ darkMode, toggleDarkMode, handleLogout, isLogge
           {/* LOGO */}
           <Typography
             variant="h6"
-            component={Link}
-            to="/"
+            onClick={() => navigate("/welcome")}
             sx={{
               textDecoration: "none",
               fontWeight: "bold",
               color: (theme) => theme.palette.primary.main,
               fontSize: "1.8rem",
+              cursor: "pointer",
+              userSelect: "none",
             }}
           >
             CINESystem

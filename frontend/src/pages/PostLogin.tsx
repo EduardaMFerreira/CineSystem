@@ -1,4 +1,4 @@
-import { Box, Typography, Container, Button } from "@mui/material";
+import { Box, Typography, Container } from "@mui/material";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -35,13 +35,6 @@ export default function PostLogin() {
         <Typography variant="body1" align="center" color="text.secondary">
           Redirecionando para a página inicial...
         </Typography>
-        <Button
-          variant="contained"
-          onClick={() => navigate("/home")}
-          sx={{ mt: 2, backgroundColor: "primary.main" }}
-        >
-          Ir para página inicial
-        </Button>
       </Box>
     </Container>
   );
