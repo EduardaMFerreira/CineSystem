@@ -134,6 +134,7 @@ export default function EscolherSessao() {
           setIsLogged(true);
           // Recarrega as sessões após login
           if (filmeId) {
+            setLoading(true);
             listarSessoesPorFilme(parseInt(filmeId))
               .then((sessoesData) => {
                 setSessoes(sessoesData);
@@ -142,6 +143,7 @@ export default function EscolherSessao() {
               .catch((error) => {
                 setErro("Erro ao carregar sessões");
                 console.error(error);
+                setLoading(false);
               });
           }
         }}

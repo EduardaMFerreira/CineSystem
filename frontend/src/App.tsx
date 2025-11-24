@@ -17,6 +17,7 @@ import Contato from "./pages/Contato";
 import Perfil from "./pages/Perfil";
 import EscolherSessao from "./pages/EscolherSessao";
 import ReservasProtected from "./components/ReservasProtected";
+import AuthGuard from "./components/AuthGuard";
 import { lightTheme, darkTheme } from "./theme/theme";
 
 export default function App() {
@@ -35,8 +36,12 @@ export default function App() {
     // Listener para mudanças no localStorage (entre abas)
     window.addEventListener("storage", checkAuth);
 
+    // Verifica periodicamente para atualizar estado quando token muda na mesma aba
+    const interval = setInterval(checkAuth, 1000);
+
     return () => {
       window.removeEventListener("storage", checkAuth);
+      clearInterval(interval);
     };
   }, []);
 
@@ -58,14 +63,63 @@ export default function App() {
       <CssBaseline />
       <BrowserRouter>
         <Routes>
-          {/* Rotas de autenticação sem Layout */}
-          <Route path="/welcome" element={<Welcome />} />
-          <Route path="/login" element={<Login onLogin={handleLogin} />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/verify-code" element={<VerifyCode />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/post-login" element={<PostLogin />} />
+          {/* Rotas de autenticação sem Layout - redireciona se já estiver logado */}
+          <Route
+            path="/welcome"
+            element={
+              <AuthGuard requireAuth={false} redirectTo="/home">
+                <Welcome />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              <AuthGuard requireAuth={false} redirectTo="/home">
+                <Login onLogin={handleLogin} />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <AuthGuard requireAuth={false} redirectTo="/home">
+                <Register />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/forgot-password"
+            element={
+              <AuthGuard requireAuth={false} redirectTo="/home">
+                <ForgotPassword />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/verify-code"
+            element={
+              <AuthGuard requireAuth={false} redirectTo="/home">
+                <VerifyCode />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/reset-password"
+            element={
+              <AuthGuard requireAuth={false} redirectTo="/home">
+                <ResetPassword />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/post-login"
+            element={
+              <AuthGuard requireAuth={true} redirectTo="/login">
+                <PostLogin />
+              </AuthGuard>
+            }
+          />
 
           {/* Rotas protegidas com Layout */}
           <Route
@@ -149,8 +203,17 @@ export default function App() {
             }
           />
 
-          {/* Redireciona raiz para welcome */}
-          <Route path="/" element={<Navigate to="/welcome" replace />} />
+          {/* Redireciona raiz baseado no estado de autenticação */}
+          <Route
+            path="/"
+            element={
+              localStorage.getItem("token") ? (
+                <Navigate to="/home" replace />
+              ) : (
+                <Navigate to="/welcome" replace />
+              )
+            }
+          />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

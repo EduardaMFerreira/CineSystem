@@ -24,6 +24,8 @@ export default function Login({ onLogin }: LoginProps) {
       if (data && data.token) {
         localStorage.setItem("token", data.token);
         if (onLogin) onLogin();
+        // Dispara evento para atualizar estado em outras partes da aplicação
+        window.dispatchEvent(new Event("storage"));
         navigate("/post-login");
       } else {
         setErro("Resposta inválida do servidor");

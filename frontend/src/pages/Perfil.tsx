@@ -1,11 +1,29 @@
 import { Box, Button, Typography, Container, Paper, Alert } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import EditIcon from "@mui/icons-material/Edit";
 import LoginModal from "../components/LoginModal";
 
 export default function Perfil() {
-  const isLogged = !!localStorage.getItem("token");
+  const navigate = useNavigate();
+  const [isLogged, setIsLogged] = useState(!!localStorage.getItem("token"));
   const [showLoginModal, setShowLoginModal] = useState(false);
+
+  useEffect(() => {
+    const checkAuth = () => {
+      const token = localStorage.getItem("token");
+      setIsLogged(!!token);
+    };
+
+    checkAuth();
+    window.addEventListener("storage", checkAuth);
+    const interval = setInterval(checkAuth, 1000);
+
+    return () => {
+      window.removeEventListener("storage", checkAuth);
+      clearInterval(interval);
+    };
+  }, []);
 
   if (!isLogged) {
     return (
@@ -42,10 +60,17 @@ export default function Perfil() {
 
         <LoginModal
           open={showLoginModal}
-          onClose={() => setShowLoginModal(false)}
+          onClose={() => {
+            setShowLoginModal(false);
+            // Se fechar sem login, redireciona para home
+            if (!localStorage.getItem("token")) {
+              navigate("/home");
+            }
+          }}
           onLoginSuccess={() => {
             setShowLoginModal(false);
-            window.location.reload(); // Recarrega para mostrar o perfil
+            setIsLogged(true);
+            // Não precisa recarregar, o estado já foi atualizado
           }}
         />
       </Container>

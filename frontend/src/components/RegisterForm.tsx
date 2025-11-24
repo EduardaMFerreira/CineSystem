@@ -57,6 +57,8 @@ export default function RegisterForm({
       const data = await registerRequest(nome.trim(), email.trim(), senha);
       if (data && data.token) {
         localStorage.setItem("token", data.token);
+        // Dispara evento para atualizar estado em outras partes da aplicação
+        window.dispatchEvent(new Event("storage"));
         if (onSuccess) {
           onSuccess();
         } else if (inModal) {

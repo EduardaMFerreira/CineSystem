@@ -27,6 +27,8 @@ export default function LoginForm({
       const data = await loginRequest(email, senha);
       if (data && data.token) {
         localStorage.setItem("token", data.token);
+        // Dispara evento para atualizar estado em outras partes da aplicação
+        window.dispatchEvent(new Event("storage"));
         if (onLogin) onLogin();
       } else {
         setErro("Resposta inválida do servidor");
