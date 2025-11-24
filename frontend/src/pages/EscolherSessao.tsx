@@ -6,6 +6,7 @@ import { listarFilmes } from "../services/filmeService";
 import { criarReserva } from "../services/reservaService";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
+import LockIcon from "@mui/icons-material/Lock";
 import LoginModal from "../components/LoginModal";
 
 export default function EscolherSessao() {
@@ -25,9 +26,6 @@ export default function EscolherSessao() {
       const token = localStorage.getItem("token");
       const logged = !!token;
       setIsLogged(logged);
-      if (!logged) {
-        setShowLoginModal(true);
-      }
     };
     
     checkAuth();
@@ -99,10 +97,10 @@ export default function EscolherSessao() {
     });
   }
 
-  // Se não estiver autenticado, mostra apenas o modal
+  // Se não estiver autenticado, mostra a tela de acesso restrito
   if (!isLogged) {
     return (
-      <Container maxWidth="lg" sx={{ py: 4 }}>
+      <Container maxWidth="md" sx={{ py: 8 }}>
         <Box
           sx={{
             display: "flex",
@@ -115,39 +113,39 @@ export default function EscolherSessao() {
             boxShadow: 2,
           }}
         >
-          <Typography variant="h5" fontWeight={700} color="primary.main" align="center">
-            Faça login ou crie uma conta para escolher sessões
+          <LockIcon sx={{ fontSize: 80, color: "warning.main" }} />
+          <Typography variant="h4" fontWeight={700} color="primary.main" align="center">
+          Quase lá! Entre na sua conta para continuar
           </Typography>
-          <Typography variant="body1" color="text.secondary" align="center">
-            Você precisa estar autenticado para visualizar e reservar sessões.
-          </Typography>
-        </Box>
+          
+          <Alert severity="info" sx={{ width: "100%" }}>
+            <Typography variant="body1" sx={{ mb: 1 }}>
+              <strong>Entre ou cadastre-se </strong>
+            </Typography>
+            <Typography variant="body2">
+              para visualizar e reservar sessões.
+            </Typography>
+          </Alert>
 
-        <LoginModal
-          open={showLoginModal}
-          onClose={() => {
-            setShowLoginModal(false);
-            navigate("/home");
-          }}
-        onLoginSuccess={() => {
-          setShowLoginModal(false);
-          setIsLogged(true);
-          // Recarrega as sessões após login
-          if (filmeId) {
-            setLoading(true);
-            listarSessoesPorFilme(parseInt(filmeId))
-              .then((sessoesData) => {
-                setSessoes(sessoesData);
-                setLoading(false);
-              })
-              .catch((error) => {
-                setErro("Erro ao carregar sessões");
-                console.error(error);
-                setLoading(false);
-              });
-          }
-        }}
-        />
+          <Box display="flex" gap={2} width="100%" maxWidth="400px" mt={2}>
+            <Button
+              variant="contained"
+              fullWidth
+              onClick={() => navigate("/register")}
+              sx={{ py: 1.5, backgroundColor: "primary.main" }}
+            >
+              Criar Conta
+            </Button>
+            <Button
+              variant="outlined"
+              fullWidth
+              onClick={() => navigate("/login")}
+              sx={{ py: 1.5, borderColor: "primary.main", color: "primary.main" }}
+            >
+              Fazer Login
+            </Button>
+          </Box>
+        </Box>
       </Container>
     );
   }

@@ -28,15 +28,15 @@ export default function ReservasProtected({ children, isLogged }: ReservasProtec
         >
           <LockIcon sx={{ fontSize: 80, color: "warning.main" }} />
           <Typography variant="h4" fontWeight={700} color="primary.main" align="center">
-            Acesso Restrito
+          Quase lá! Entre na sua conta para continuar
           </Typography>
           
           <Alert severity="info" sx={{ width: "100%" }}>
             <Typography variant="body1" sx={{ mb: 1 }}>
-              <strong>Você precisa estar autenticado para acessar esta página.</strong>
+              <strong>Entre ou cadastre-se</strong>
             </Typography>
             <Typography variant="body2">
-              Crie uma conta ou faça login para visualizar e gerenciar suas reservas.
+            para visualizar e gerenciar suas reservas.
             </Typography>
           </Alert>
 
