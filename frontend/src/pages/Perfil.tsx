@@ -89,7 +89,7 @@ export default function Perfil() {
           <Button
             variant="outlined"
             startIcon={<EditIcon />}
-            onClick={() => setShowLoginModal(true)}
+            onClick={() => navigate("/login")}
             sx={{ borderColor: "primary.main", color: "primary.main" }}
           >
             Editar

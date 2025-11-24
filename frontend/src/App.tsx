@@ -74,11 +74,7 @@ export default function App() {
           />
           <Route
             path="/login"
-            element={
-              <AuthGuard requireAuth={false} redirectTo="/home">
-                <Login onLogin={handleLogin} />
-              </AuthGuard>
-            }
+            element={<Login onLogin={handleLogin} />}
           />
           <Route
             path="/register"
