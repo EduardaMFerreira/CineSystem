@@ -5,6 +5,8 @@ import { ThemeProvider, CssBaseline } from "@mui/material";
 import Layout from "./layout/Layout";
 import Home from "./pages/Home";
 import Login from "./components/Login";
+
+// Telas adicionais da outra branch
 import Welcome from "./pages/Welcome";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
@@ -16,16 +18,20 @@ import Reservas from "./pages/Reservas";
 import Contato from "./pages/Contato";
 import Perfil from "./pages/Perfil";
 import EscolherSessao from "./pages/EscolherSessao";
+
+// Seus componentes
+import MinhasReservas from "./pages/MinhasReservas";
+
+// Proteções
 import ReservasProtected from "./components/ReservasProtected";
 import AuthGuard from "./components/AuthGuard";
-import { lightTheme, darkTheme } from "./theme/theme";
 
-// ⬇️ IMPORTANTE — ADICIONE ESTE IMPORT
+import { lightTheme, darkTheme } from "./theme/theme";
 import ScrollToTop from "./components/ScrollToTop";
 
 export default function App() {
   const [darkMode, setDarkMode] = useState(false);
-  const [isLogged, setIsLogged] = useState(false);
+  const [isLogged, setIsLogged] = useState(true);
 
   useEffect(() => {
     const checkAuth = () => {
@@ -60,12 +66,10 @@ export default function App() {
     <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
       <CssBaseline />
       <BrowserRouter>
-
-        {/* ⬇️ COLOCAR AQUI — funciona para TODAS as páginas */}
         <ScrollToTop />
 
         <Routes>
-          {/* Rotas de autenticação */}
+          {/* Rotas públicas */}
           <Route
             path="/welcome"
             element={
@@ -74,6 +78,7 @@ export default function App() {
               </AuthGuard>
             }
           />
+
           <Route
             path="/login"
             element={
@@ -82,6 +87,7 @@ export default function App() {
               </AuthGuard>
             }
           />
+
           <Route
             path="/register"
             element={
@@ -90,6 +96,7 @@ export default function App() {
               </AuthGuard>
             }
           />
+
           <Route
             path="/forgot-password"
             element={
@@ -98,6 +105,7 @@ export default function App() {
               </AuthGuard>
             }
           />
+
           <Route
             path="/verify-code"
             element={
@@ -106,6 +114,7 @@ export default function App() {
               </AuthGuard>
             }
           />
+
           <Route
             path="/reset-password"
             element={
@@ -138,6 +147,7 @@ export default function App() {
               </Layout>
             }
           />
+
           <Route
             path="/filmes"
             element={
@@ -151,6 +161,8 @@ export default function App() {
               </Layout>
             }
           />
+
+          {/* 🆕 SUA ROTA DE MINHAS RESERVAS */}
           <Route
             path="/reservas"
             element={
@@ -161,11 +173,12 @@ export default function App() {
                 handleLogout={handleLogout}
               >
                 <ReservasProtected isLogged={isLogged}>
-                  <Reservas />
+                  <MinhasReservas />
                 </ReservasProtected>
               </Layout>
             }
           />
+
           <Route
             path="/contato"
             element={
@@ -179,6 +192,7 @@ export default function App() {
               </Layout>
             }
           />
+
           <Route
             path="/perfil"
             element={
@@ -192,6 +206,7 @@ export default function App() {
               </Layout>
             }
           />
+
           <Route
             path="/escolher-sessao/:filmeId"
             element={
@@ -206,7 +221,7 @@ export default function App() {
             }
           />
 
-          {/* Redirecionamento baseado em autenticação */}
+          {/* Redirecionamento inicial */}
           <Route
             path="/"
             element={
