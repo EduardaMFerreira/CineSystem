@@ -20,23 +20,21 @@ import ReservasProtected from "./components/ReservasProtected";
 import AuthGuard from "./components/AuthGuard";
 import { lightTheme, darkTheme } from "./theme/theme";
 
+// ⬇️ IMPORTANTE — ADICIONE ESTE IMPORT
+import ScrollToTop from "./components/ScrollToTop";
+
 export default function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [isLogged, setIsLogged] = useState(false);
 
   useEffect(() => {
-    // Verifica se há token no localStorage ao carregar
     const checkAuth = () => {
       const token = localStorage.getItem("token");
       setIsLogged(!!token);
     };
 
     checkAuth();
-
-    // Listener para mudanças no localStorage (entre abas)
     window.addEventListener("storage", checkAuth);
-
-    // Verifica periodicamente para atualizar estado quando token muda na mesma aba
     const interval = setInterval(checkAuth, 1000);
 
     return () => {
@@ -62,8 +60,12 @@ export default function App() {
     <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
       <CssBaseline />
       <BrowserRouter>
+
+        {/* ⬇️ COLOCAR AQUI — funciona para TODAS as páginas */}
+        <ScrollToTop />
+
         <Routes>
-          {/* Rotas de autenticação sem Layout - redireciona se já estiver logado */}
+          {/* Rotas de autenticação */}
           <Route
             path="/welcome"
             element={
@@ -112,6 +114,7 @@ export default function App() {
               </AuthGuard>
             }
           />
+
           <Route
             path="/post-login"
             element={
@@ -121,7 +124,7 @@ export default function App() {
             }
           />
 
-          {/* Rotas protegidas com Layout */}
+          {/* Rotas com layout */}
           <Route
             path="/home"
             element={
@@ -203,7 +206,7 @@ export default function App() {
             }
           />
 
-          {/* Redireciona raiz baseado no estado de autenticação */}
+          {/* Redirecionamento baseado em autenticação */}
           <Route
             path="/"
             element={
