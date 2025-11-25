@@ -55,11 +55,14 @@ export default function Filmes() {
 
   const renderCarrossel = (filmesArray: Filme[], ref: React.RefObject<HTMLDivElement | null>) => (
     <Box display="flex" alignItems="center" gap={2} width="100%" justifyContent="flex-start" mb={6}>
-      <ArrowBackIosIcon
-        fontSize="large"
-        sx={{ cursor: "pointer", display: { xs: "none", md: "block" } }}
-        onClick={() => scrollCarrossel(ref, "left")}
-      />
+      {/* Setas só aparecem se não estiver pesquisando */}
+      {!searchText && (
+        <ArrowBackIosIcon
+          fontSize="large"
+          sx={{ cursor: "pointer", display: { xs: "none", md: "block" } }}
+          onClick={() => scrollCarrossel(ref, "left")}
+        />
+      )}
 
       <Box
         ref={ref}
@@ -101,7 +104,14 @@ export default function Filmes() {
               <Button
                 fullWidth
                 variant="contained"
-                sx={{ mt: 1, backgroundColor: primaryRed }}
+                sx={{
+                  mt: 1,
+                  backgroundColor: theme.palette.mode === "dark" ? "#8B1A1A" : primaryRed,
+                  color: theme.palette.mode === "dark" ? "#fff" : "#f5f5f5",
+                  "&:hover": {
+                    backgroundColor: theme.palette.mode === "dark" ? "#A32B2B" : "#7A0000",
+                  },
+                }}
                 onClick={() => navigate(`/escolher-sessao/${filme.id}`)}
               >
                 Escolher Sessão
@@ -111,11 +121,13 @@ export default function Filmes() {
         )}
       </Box>
 
-      <ArrowForwardIosIcon
-        fontSize="large"
-        sx={{ cursor: "pointer", display: { xs: "none", md: "block" } }}
-        onClick={() => scrollCarrossel(ref, "right")}
-      />
+      {!searchText && (
+        <ArrowForwardIosIcon
+          fontSize="large"
+          sx={{ cursor: "pointer", display: { xs: "none", md: "block" } }}
+          onClick={() => scrollCarrossel(ref, "right")}
+        />
+      )}
     </Box>
   );
 
@@ -167,7 +179,8 @@ export default function Filmes() {
             flexGrow: 1,
             minWidth: 300,
             maxWidth: 600,
-            backgroundColor: "#fff",
+            backgroundColor: theme.palette.mode === "dark" ? "#2F2F2F" : "#fff",
+            input: { color: theme.palette.mode === "dark" ? "#f5f5f5" : "#000" },
             borderRadius: 1,
           }}
         />

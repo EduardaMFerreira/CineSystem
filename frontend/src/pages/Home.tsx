@@ -1,4 +1,4 @@
-import { Box, Button, Typography, useMediaQuery } from "@mui/material";
+import { Box, Button, Typography, useMediaQuery, useTheme } from "@mui/material";
 import RoomIcon from "@mui/icons-material/Room";
 import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
@@ -13,6 +13,7 @@ export default function Home() {
   const [filmes, setFilmes] = useState<any[]>([]);
   const [podeDeslizar, setPodeDeslizar] = useState(false);
   const isMobile = useMediaQuery("(max-width:600px)");
+  const theme = useTheme();
   const navigate = useNavigate();
 
   const carrosselRef = useRef<HTMLDivElement | null>(null);
@@ -21,7 +22,7 @@ export default function Home() {
     async function carregar() {
       try {
         const data = await listarFilmes();
-        setFilmes(data.slice(0, 4)); // AGORA: máximo 4 filmes
+        setFilmes(data.slice(0, 4));
       } catch (error) {
         console.error("Erro ao carregar filmes:", error);
       }
@@ -32,14 +33,19 @@ export default function Home() {
   useEffect(() => {
     if (carrosselRef.current) {
       const precisa =
-        carrosselRef.current.scrollWidth >
-        carrosselRef.current.clientWidth;
+        carrosselRef.current.scrollWidth > carrosselRef.current.clientWidth;
       setPodeDeslizar(precisa);
     }
   }, [filmes]);
 
+  const cardBg = theme.palette.mode === "dark" ? "#2F2F2F" : "#fff";
+  const textPrimary = theme.palette.mode === "dark" ? "#fff" : "#000";
+  const textSecondary = theme.palette.mode === "dark" ? "#ccc" : theme.palette.text.secondary;
+  const btnBg = theme.palette.mode === "dark" ? "#8B1A1A" : "#5A0C07";
+  const btnHover = theme.palette.mode === "dark" ? "#A32B2B" : "#7A0000";
+
   return (
-    <Box display="flex" flexDirection="column" alignItems="center">
+    <Box display="flex" flexDirection="column" alignItems="center" bgcolor={theme.palette.background.default}>
       <Typography
         variant={isMobile ? "h2" : "h1"}
         align="center"
@@ -67,26 +73,32 @@ export default function Home() {
         width="70%"
         borderRadius={2}
         boxShadow="0 4px 12px rgba(0,0,0,0.15)"
-        bgcolor={(theme) =>
-          theme.palette.mode === "dark" ? "#2F2F2F" : "background.paper"
-        }
+        bgcolor={cardBg}
         display="flex"
         flexDirection={{ xs: "column", md: "row" }}
         gap={4}
       >
         <Box flex={1}>
-          <Typography variant="h5" fontWeight={700} color="primary.main">
+          <Typography variant="h5" fontWeight={700} color={textPrimary}>
             Somos Um Cinema Dedicado À Melhor Tecnologia E Muita Pipoca
           </Typography>
 
-          <Typography variant="body1" mt={2} color="text.secondary">
+          <Typography variant="body1" mt={2} color={textSecondary}>
             Localizado no coração da cidade, o CineSystem é o lugar ideal para
             se divertir e viver grandes histórias na telona!
           </Typography>
 
           <Button
             variant="contained"
-            sx={{ mt: 4, py: 1.2, px: 3, backgroundColor: "primary.main" }}
+            sx={{
+              mt: 4,
+              py: 1.2,
+              px: 3,
+              backgroundColor: btnBg,
+              color: "#fff",
+              fontWeight: 600,
+              "&:hover": { backgroundColor: btnHover },
+            }}
           >
             <RoomIcon sx={{ mr: 1 }} />
             Veja como chegar
@@ -95,7 +107,7 @@ export default function Home() {
 
         <Box
           sx={{
-            bgcolor: "#CFCFCF",
+            bgcolor: theme.palette.mode === "dark" ? "#444" : "#CFCFCF",
             width: { xs: "100%", md: "2px" },
             height: { xs: "2px", md: "auto" },
             my: { xs: 2, md: 0 },
@@ -103,21 +115,20 @@ export default function Home() {
         />
 
         <Box flex={1}>
-          <Typography variant="h5" fontWeight={700} pb={2}>
+          <Typography variant="h5" fontWeight={700} pb={2} color={textPrimary}>
             Divirta-se assistindo aos melhores filmes!
           </Typography>
 
           <Box>
             <Box mt={3} display="flex" alignItems="center" gap={1}>
-              <ConfirmationNumberIcon color="primary" />
-              <Typography fontSize="1rem">Aberto ao público</Typography>
+              <ConfirmationNumberIcon sx={{ color: theme.palette.primary.main }} />
+              <Typography fontSize="1rem" color={textPrimary}>Aberto ao público</Typography>
             </Box>
 
             <Box mt={2} display="flex" alignItems="center" gap={1}>
-              <AccessTimeIcon color="primary" />
-              <Typography fontSize="1rem">
-                <strong>SEG À SEX:</strong> das 14h às 23h (última sessão às
-                22h);
+              <AccessTimeIcon sx={{ color: theme.palette.primary.main }} />
+              <Typography fontSize="1rem" color={textSecondary}>
+                <strong>SEG À SEX:</strong> das 14h às 23h (última sessão às 22h)
                 <br />
                 <strong>SÁB/DOM:</strong> das 13h às 23h (última sessão às 22h)
               </Typography>
@@ -137,23 +148,17 @@ export default function Home() {
             mr: 2,
           }}
         />
-        <Typography variant="h4" fontWeight={700}>
+        <Typography variant="h4" fontWeight={700} color={textPrimary}>
           FILMES EM CARTAZ
         </Typography>
       </Box>
 
       {/* CARROSSEL */}
-      <Box
-        display="flex"
-        alignItems="center"
-        gap={2}
-        width="100%"
-        justifyContent="center"
-      >
+      <Box display="flex" alignItems="center" gap={2} width="100%" justifyContent="center">
         {podeDeslizar && (
           <ArrowBackIosIcon
             fontSize="large"
-            sx={{ cursor: "pointer", display: { xs: "none", md: "block" } }}
+            sx={{ cursor: "pointer", display: { xs: "none", md: "block" }, color: textPrimary }}
           />
         )}
 
@@ -166,14 +171,11 @@ export default function Home() {
             overflowX: { xs: "auto", md: "visible" },
             paddingBottom: 1,
             "&::-webkit-scrollbar": { height: 6 },
-            "&::-webkit-scrollbar-thumb": {
-              background: "#888",
-              borderRadius: 4,
-            },
+            "&::-webkit-scrollbar-thumb": { background: "#888", borderRadius: 4 },
           }}
         >
           {filmes.length === 0 ? (
-            <Typography color="text.secondary">Carregando filmes...</Typography>
+            <Typography color={textSecondary}>Carregando filmes...</Typography>
           ) : (
             filmes.map((filme) => (
               <Box
@@ -183,9 +185,7 @@ export default function Home() {
                 width={{ xs: "250px", md: "280px" }}
                 borderRadius={2}
                 boxShadow="0 4px 12px rgba(0,0,0,0.15)"
-                bgcolor={(theme) =>
-                  theme.palette.mode === "dark" ? "#2F2F2F" : "background.paper"
-                }
+                bgcolor={cardBg}
               >
                 <img
                   src={filme.bannerUrl}
@@ -193,11 +193,11 @@ export default function Home() {
                   style={{ borderRadius: "8px" }}
                 />
 
-                <Typography fontWeight={700} mt={1}>
+                <Typography fontWeight={700} mt={1} color={textPrimary}>
                   {filme.titulo}
                 </Typography>
 
-                <Typography mt={1}>
+                <Typography mt={1} color={textSecondary}>
                   Gênero: {filme.genero} <br />
                   Duração: {filme.duracao} min
                 </Typography>
@@ -205,7 +205,12 @@ export default function Home() {
                 <Button
                   fullWidth
                   variant="contained"
-                  sx={{ mt: 2, backgroundColor: "primary.main" }}
+                  sx={{
+                    mt: 2,
+                    backgroundColor: btnBg,
+                    color: "#fff",
+                    "&:hover": { backgroundColor: btnHover },
+                  }}
                   onClick={() => navigate(`/escolher-sessao/${filme.id}`)}
                 >
                   Escolher Sessão
@@ -218,7 +223,7 @@ export default function Home() {
         {podeDeslizar && (
           <ArrowForwardIosIcon
             fontSize="large"
-            sx={{ cursor: "pointer", display: { xs: "none", md: "block" } }}
+            sx={{ cursor: "pointer", display: { xs: "none", md: "block" }, color: textPrimary }}
           />
         )}
       </Box>
@@ -230,8 +235,10 @@ export default function Home() {
           mb: 8,
           width: "70%",
           py: 2,
-          backgroundColor: "primary.main",
+          backgroundColor: btnBg,
+          color: "#fff",
           fontWeight: 700,
+          "&:hover": { backgroundColor: btnHover },
         }}
         onClick={() => navigate("/filmes")}
       >

@@ -1,0 +1,88 @@
+*   [33m5d9b4dd[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mdevelop[m[33m, [m[1;31morigin/develop[m[33m)[m Merge branch 'develop' of https://github.com/EduardaMFerreira/CineSystem into develop
+[31m|[m[32m\[m  
+[31m|[m * [33m9ab014e[m Atualizações do frontend: filmes, home e contato
+* [32m|[m [33m39222e5[m[33m ([m[1;32mbackup-develop[m[33m)[m Atualizações do frontend: filmes, home e contato
+[32m|[m[32m/[m  
+*   [33m1e13913[m Resolve conflito do schema.prisma mantendo feature/login
+[33m|[m[34m\[m  
+* [34m\[m   [33mfd00010[m Merge pull request #14 from EduardaMFerreira/feature/otimizar-reserva
+[35m|[m[36m\[m [34m\[m  
+[35m|[m * [34m|[m [33m0cd40ac[m[33m ([m[1;31morigin/feature/otimizar-reserva[m[33m)[m feature: otimizar-reserva
+[35m|[m[35m/[m [34m/[m  
+[35m|[m [34m|[m * [33mdc3288b[m[33m ([m[1;35mrefs/stash[m[33m)[m WIP on develop: 1811ed5 Merge pull request #13 from EduardaMFerreira/feature/home-page
+[35m|[m [34m|[m[35m/[m[1;32m|[m 
+[35m|[m[35m/[m[34m|[m [1;32m|[m 
+[35m|[m [34m|[m * [33m52ea1fc[m index on develop: 1811ed5 Merge pull request #13 from EduardaMFerreira/feature/home-page
+[35m|[m [34m|[m[35m/[m  
+[35m|[m[35m/[m[34m|[m   
+[35m|[m [34m|[m * [33m17e42c6[m[33m ([m[1;31morigin/feature/login[m[33m)[m :lipstick: feat: melhorando o design na parte de editar perfil
+[35m|[m [34m|[m[34m/[m  
+[35m|[m * [33mbd637d8[m :sparkles: feat: ajustando cadastro/login
+[35m|[m * [33m42f21b5[m :sparkles: feat: lógica de autenticação do usuario
+[35m|[m * [33m60e5b16[m :lipstick: feat: organizando o cadastro/login
+[35m|[m * [33m83942b7[m :sparkles: feat: login,cadastro e recuperação de senha
+[35m|[m[35m/[m  
+[35m|[m * [33m5f56316[m[33m ([m[1;31morigin/feature/reservas[m[33m)[m add modal, reservas e perfil
+[35m|[m[35m/[m  
+*   [33m1811ed5[m Merge pull request #13 from EduardaMFerreira/feature/home-page
+[1;35m|[m[1;36m\[m  
+[1;35m|[m * [33mfc92ae1[m[33m ([m[1;31morigin/feature/home-page[m[33m)[m feature: home-page
+[1;35m|[m[1;35m/[m  
+*   [33mc71a4d3[m Merge pull request #12 from EduardaMFerreira/feature/dark-light-mode
+[31m|[m[32m\[m  
+[31m|[m * [33mb6e4cea[m[33m ([m[1;31morigin/feature/dark-light-mode[m[33m)[m feature:dark-light-mode
+[31m|[m[31m/[m  
+*   [33mdc24f0c[m Merge pull request #11 from EduardaMFerreira/feature/navbar-footer-home
+[33m|[m[34m\[m  
+[33m|[m * [33mc482601[m[33m ([m[1;31morigin/feature/navbar-footer-home[m[33m)[m feature: navbar-footer-home
+[33m|[m[33m/[m  
+*   [33m9f031b4[m Merge pull request #10 from EduardaMFerreira/feature/otimizar-api
+[35m|[m[36m\[m  
+[35m|[m * [33m57eee6a[m[33m ([m[1;31morigin/feature/otimizar-api[m[33m)[m chore: adicionar backend.zip ao .gitignore
+[35m|[m * [33m139132a[m refactor(db): otimizar esquema de banco e alinhamento com frontend
+[35m|[m[35m/[m  
+*   [33m174c363[m Merge branch 'main' into 'develop' – sincroniza atualizações e correções da main
+[1;31m|[m[1;32m\[m  
+[1;31m|[m *   [33m0b79229[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m Merge pull request #9 from EduardaMFerreira/fix/swagger-routes
+[1;31m|[m [1;33m|[m[1;34m\[m  
+[1;31m|[m [1;33m|[m * [33mc3914da[m[33m ([m[1;31morigin/fix/swagger-routes[m[33m)[m fix(routes): corrigir rotas e exibição do Swagger
+[1;31m|[m [1;33m|[m[1;33m/[m  
+* [1;33m|[m   [33mc3e7af0[m Merge pull request #7 from EduardaMFerreira/feature/frontend-setup
+[1;35m|[m[1;36m\[m [1;33m\[m  
+[1;35m|[m * [1;33m|[m [33mec1cf55[m[33m ([m[1;31morigin/feature/frontend-setup[m[33m)[m feat(frontend): inicializa projeto React com Vite e TypeScript
+[1;35m|[m[1;35m/[m [1;33m/[m  
+* [1;33m|[m [33m97c78b1[m chore: reestrutura projeto e adiciona pastas backend e frontend
+* [1;33m|[m [33m7032fe8[m Update salaController.ts
+* [1;33m|[m [33m2170fef[m Update salaRoutes.ts
+* [1;33m|[m [33m0f465ef[m Update salaSchema.ts
+* [1;33m|[m [33m2994eec[m Update salaService.ts
+* [1;33m|[m [33md3e685b[m Update schema.prisma
+* [1;33m|[m [33mef2a173[m Update prismaClient.ts
+[1;33m|[m[1;33m/[m  
+*   [33m21c18bf[m Merge pull request #5 from EduardaMFerreira/feature/sala
+[31m|[m[32m\[m  
+[31m|[m * [33m508a94b[m[33m ([m[1;31morigin/feature/sala[m[33m)[m Comentários adicionados ao Index, Controller, Routes, Service e Schema
+[31m|[m[31m/[m  
+* [33m42e7285[m docs: adicionar comentários detalhados nos controllers, schemas e Swagger
+* [33m5a55aff[m Update README.md
+* [33m18816c5[m Add swagger
+* [33m6eae0b4[m Validações com Zod
+*   [33mb8220e0[m Merge pull request #4 from EduardaMFerreira/crudsessao
+[33m|[m[34m\[m  
+[33m|[m * [33m52fca0e[m[33m ([m[1;31morigin/crudsessao[m[33m)[m :sparkles: feat: Adicionar CRUD completo de Sessão com dependência de Filme e Sala
+[33m|[m[33m/[m  
+* [33mdbc91fc[m CRUD filme
+*   [33mc071d97[m Merge pull request #3 from EduardaMFerreira/feature/sala
+[35m|[m[36m\[m  
+[35m|[m * [33mb6caa05[m CRUD Salas
+[35m|[m[35m/[m  
+*   [33me304a62[m Merge pull request #2 from EduardaMFerreira/estruturação
+[1;31m|[m[1;32m\[m  
+[1;31m|[m * [33m29f127b[m[33m ([m[1;31morigin/estruturação[m[33m)[m Add estrutura para CRUD
+[1;31m|[m[1;31m/[m  
+*   [33m6ed27ba[m Merge pull request #1 from EduardaMFerreira/feature/sala
+[1;33m|[m[1;34m\[m  
+[1;33m|[m * [33m2139f9b[m Database conexão
+[1;33m|[m[1;33m/[m  
+* [33m7e003f5[m Instalação de dependência
+* [33mfb04fb0[m Initial commit
