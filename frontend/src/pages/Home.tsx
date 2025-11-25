@@ -130,10 +130,10 @@ export default function Home() {
       <Box width="70%" display="flex" alignItems="center" mb={4} mt={2}>
         <Box
           sx={{
-            width: "6px",
-            height: "32px",
+            width: "8px",
+            height: "80px",
             bgcolor: "#5A0C07",
-            borderRadius: "4px",
+            borderRadius: "px",
             mr: 2,
           }}
         />
