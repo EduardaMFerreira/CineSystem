@@ -1,18 +1,53 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useState } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 
 import Layout from "./layout/Layout";
 import Home from "./pages/Home";
 import Login from "./components/Login";
-import Perfil from "./pages/perfil"; 
-import MinhasReservas from "./pages/MinhasReservas"; // <-- ADICIONAR AQUI
+
+// Telas adicionais da outra branch
+import Welcome from "./pages/Welcome";
+import Register from "./pages/Register";
+import ForgotPassword from "./pages/ForgotPassword";
+import VerifyCode from "./pages/VerifyCode";
+import ResetPassword from "./pages/ResetPassword";
+import PostLogin from "./pages/PostLogin";
+import Filmes from "./pages/Filmes";
+import Reservas from "./pages/Reservas";
+import Contato from "./pages/Contato";
+import Perfil from "./pages/Perfil";
+import EscolherSessao from "./pages/EscolherSessao";
+
+// Seus componentes
+import MinhasReservas from "./pages/MinhasReservas";
+
+// Proteções
+import ReservasProtected from "./components/ReservasProtected";
+import AuthGuard from "./components/AuthGuard";
 
 import { lightTheme, darkTheme } from "./theme/theme";
+import ScrollToTop from "./components/ScrollToTop";
 
 export default function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [isLogged, setIsLogged] = useState(true);
+
+  useEffect(() => {
+    const checkAuth = () => {
+      const token = localStorage.getItem("token");
+      setIsLogged(!!token);
+    };
+
+    checkAuth();
+    window.addEventListener("storage", checkAuth);
+    const interval = setInterval(checkAuth, 1000);
+
+    return () => {
+      window.removeEventListener("storage", checkAuth);
+      clearInterval(interval);
+    };
+  }, []);
 
   function toggleDarkMode() {
     setDarkMode((prev) => !prev);
@@ -23,6 +58,7 @@ export default function App() {
   }
 
   function handleLogout() {
+    localStorage.removeItem("token");
     setIsLogged(false);
   }
 
@@ -30,21 +66,173 @@ export default function App() {
     <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
       <CssBaseline />
       <BrowserRouter>
-        <Layout
-          darkMode={darkMode}
-          toggleDarkMode={toggleDarkMode}
-          isLogged={isLogged}
-          handleLogout={handleLogout}
-        >
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login onLogin={handleLogin} />} />
-            <Route path="/perfil" element={<Perfil />} />
+        <ScrollToTop />
 
-            {/* 👇 ADICIONAR ESSA LINHA */}
-            <Route path="/reservas" element={<MinhasReservas />} />
-          </Routes>
-        </Layout>
+        <Routes>
+          {/* Rotas públicas */}
+          <Route
+            path="/welcome"
+            element={
+              <AuthGuard requireAuth={false} redirectTo="/home">
+                <Welcome />
+              </AuthGuard>
+            }
+          />
+
+          <Route
+            path="/login"
+            element={
+              <AuthGuard requireAuth={false} redirectTo="/home">
+                <Login onLogin={handleLogin} />
+              </AuthGuard>
+            }
+          />
+
+          <Route
+            path="/register"
+            element={
+              <AuthGuard requireAuth={false} redirectTo="/home">
+                <Register />
+              </AuthGuard>
+            }
+          />
+
+          <Route
+            path="/forgot-password"
+            element={
+              <AuthGuard requireAuth={false} redirectTo="/home">
+                <ForgotPassword />
+              </AuthGuard>
+            }
+          />
+
+          <Route
+            path="/verify-code"
+            element={
+              <AuthGuard requireAuth={false} redirectTo="/home">
+                <VerifyCode />
+              </AuthGuard>
+            }
+          />
+
+          <Route
+            path="/reset-password"
+            element={
+              <AuthGuard requireAuth={false} redirectTo="/home">
+                <ResetPassword />
+              </AuthGuard>
+            }
+          />
+
+          <Route
+            path="/post-login"
+            element={
+              <AuthGuard requireAuth={true} redirectTo="/login">
+                <PostLogin />
+              </AuthGuard>
+            }
+          />
+
+          {/* Rotas com layout */}
+          <Route
+            path="/home"
+            element={
+              <Layout
+                darkMode={darkMode}
+                toggleDarkMode={toggleDarkMode}
+                isLogged={isLogged}
+                handleLogout={handleLogout}
+              >
+                <Home />
+              </Layout>
+            }
+          />
+
+          <Route
+            path="/filmes"
+            element={
+              <Layout
+                darkMode={darkMode}
+                toggleDarkMode={toggleDarkMode}
+                isLogged={isLogged}
+                handleLogout={handleLogout}
+              >
+                <Filmes />
+              </Layout>
+            }
+          />
+
+          {/* 🆕 SUA ROTA DE MINHAS RESERVAS */}
+          <Route
+            path="/reservas"
+            element={
+              <Layout
+                darkMode={darkMode}
+                toggleDarkMode={toggleDarkMode}
+                isLogged={isLogged}
+                handleLogout={handleLogout}
+              >
+                <ReservasProtected isLogged={isLogged}>
+                  <MinhasReservas />
+                </ReservasProtected>
+              </Layout>
+            }
+          />
+
+          <Route
+            path="/contato"
+            element={
+              <Layout
+                darkMode={darkMode}
+                toggleDarkMode={toggleDarkMode}
+                isLogged={isLogged}
+                handleLogout={handleLogout}
+              >
+                <Contato />
+              </Layout>
+            }
+          />
+
+          <Route
+            path="/perfil"
+            element={
+              <Layout
+                darkMode={darkMode}
+                toggleDarkMode={toggleDarkMode}
+                isLogged={isLogged}
+                handleLogout={handleLogout}
+              >
+                <Perfil />
+              </Layout>
+            }
+          />
+
+          <Route
+            path="/escolher-sessao/:filmeId"
+            element={
+              <Layout
+                darkMode={darkMode}
+                toggleDarkMode={toggleDarkMode}
+                isLogged={isLogged}
+                handleLogout={handleLogout}
+              >
+                <EscolherSessao />
+              </Layout>
+            }
+          />
+
+          {/* Redirecionamento inicial */}
+          <Route
+            path="/"
+            element={
+              localStorage.getItem("token") ? (
+                <Navigate to="/home" replace />
+              ) : (
+                <Navigate to="/welcome" replace />
+              )
+            }
+          />
+        </Routes>
       </BrowserRouter>
     </ThemeProvider>
   );

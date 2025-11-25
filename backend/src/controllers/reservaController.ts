@@ -3,53 +3,75 @@ import { AuthRequest } from "../middlewares/authMiddleware";
 import { ReservaService } from "../services/reservaService";
 
 /**
- * Cria uma nova reserva para o usuário logado
+ * Criar uma nova reserva
  */
 export const criarReserva = async (req: AuthRequest, res: Response) => {
   try {
     const usuarioId = req.user?.userId;
     const { sessaoId } = req.body;
 
-    if (!usuarioId) return res.status(401).json({ message: "Usuário não autenticado" });
-    if (!sessaoId) return res.status(400).json({ message: "sessaoId é obrigatório" });
+    if (!usuarioId) {
+      return res.status(401).json({ message: "Usuário não autenticado" });
+    }
 
-    const reserva = await ReservaService.criarReserva(usuarioId, sessaoId);
-    res.status(201).json(reserva);
+    if (!sessaoId) {
+      return res.status(400).json({ message: "sessaoId é obrigatório" });
+    }
+
+    const resultado = await ReservaService.criarReserva(usuarioId, Number(sessaoId));
+
+    if ("error" in resultado) {
+      return res.status(400).json({ message: resultado.error });
+    }
+
+    return res.status(201).json({
+      message: "Reserva criada com sucesso",
+      reserva: resultado,
+    });
   } catch (error: any) {
-    res.status(400).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
 /**
- * Lista todas as reservas do usuário logado
+ * Listar reservas do usuário logado
  */
 export const listarMinhasReservas = async (req: AuthRequest, res: Response) => {
   try {
     const usuarioId = req.user?.userId;
-    if (!usuarioId) return res.status(401).json({ message: "Usuário não autenticado" });
+
+    if (!usuarioId) {
+      return res.status(401).json({ message: "Usuário não autenticado" });
+    }
 
     const reservas = await ReservaService.listarReservasDoUsuario(usuarioId);
-    res.json(reservas);
+
+    return res.json(reservas);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
 /**
- * Cancela uma reserva do usuário logado
+ * Cancelar reserva do usuário logado
  */
 export const cancelarReserva = async (req: AuthRequest, res: Response) => {
   try {
     const usuarioId = req.user?.userId;
     const reservaId = Number(req.params.id);
 
-    if (!usuarioId) return res.status(401).json({ message: "Usuário não autenticado" });
+    if (!usuarioId) {
+      return res.status(401).json({ message: "Usuário não autenticado" });
+    }
 
-    const deletado = await ReservaService.deletarReserva(usuarioId, reservaId);
-    if (!deletado) return res.status(404).json({ message: "Reserva não encontrada" });
+    const resultado = await ReservaService.deletarReserva(reservaId, usuarioId);
 
-    res.status(204).send();
+    if ("error" in resultado) {
+      return res.status(400).json({ message: resultado.error });
+    }
+
+    return res.status(200).json({ message: resultado.message });
   } catch (error: any) {
-    res.status(400).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
