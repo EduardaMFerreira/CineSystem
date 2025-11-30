@@ -64,7 +64,8 @@ export const cancelarReserva = async (req: AuthRequest, res: Response) => {
       return res.status(401).json({ message: "Usuário não autenticado" });
     }
 
-    const resultado = await ReservaService.deletarReserva(reservaId, usuarioId);
+    // Passar na ordem correta: deletarReserva(usuarioId, reservaId)
+    const resultado = await ReservaService.deletarReserva(usuarioId, reservaId);
 
     if ("error" in resultado) {
       return res.status(400).json({ message: resultado.error });

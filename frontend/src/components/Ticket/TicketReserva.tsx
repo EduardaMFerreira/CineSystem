@@ -3,7 +3,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import TicketImg2 from "../../assets/ticket.svg";
 
 interface TicketProps {
-  id: string;
+  id: number; // número
   filme: string;
   sala: string;
   horario: string;
