@@ -1,4 +1,4 @@
-import { Box, Container, Typography } from "@mui/material";
+import { Box, Container} from "@mui/material";
 import PerfilHeader from "../components/Perfil/PerfilHeader";
 import PerfilInfo from "../components/Perfil/PerfilInfo";
 import { useState, useEffect } from "react";
@@ -59,9 +59,6 @@ export default function Perfil() {
 
         {/* Conteúdo */}
         <Box sx={{ flex: 1 }}>
-          <Typography variant="h4" fontWeight={700} mb={2}>
-            Meu Perfil
-          </Typography>
 
           <PerfilHeader />
 

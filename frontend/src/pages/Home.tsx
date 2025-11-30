@@ -1,4 +1,10 @@
-import { Box, Button, Typography, useMediaQuery, useTheme } from "@mui/material";
+import {
+  Box,
+  Button,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import RoomIcon from "@mui/icons-material/Room";
 import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
@@ -8,6 +14,7 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { useEffect, useRef, useState } from "react";
 import { listarFilmes } from "../services/filmeService";
 import { useNavigate } from "react-router-dom";
+import MovieModal from "../components/MovieModal/MovieModal";
 
 export default function Home() {
   const [filmes, setFilmes] = useState<any[]>([]);
@@ -15,14 +22,20 @@ export default function Home() {
   const isMobile = useMediaQuery("(max-width:600px)");
   const theme = useTheme();
   const navigate = useNavigate();
-
   const carrosselRef = useRef<HTMLDivElement | null>(null);
+
+  // === MODAL ===
+  const [openModal, setOpenModal] = useState(false);
+  const [filmeSelecionado, setFilmeSelecionado] = useState<any | null>(null);
+
+  // === VERIFICAR LOGIN ===
+  const verificarLogin = () => !!localStorage.getItem("token"); // igual ao fluxo da página Filmes
 
   useEffect(() => {
     async function carregar() {
       try {
         const data = await listarFilmes();
-        setFilmes(data.slice(0, 4));
+        setFilmes(data.slice(0, 4)); // só exibe os 4 primeiros no carrossel
       } catch (error) {
         console.error("Erro ao carregar filmes:", error);
       }
@@ -32,24 +45,39 @@ export default function Home() {
 
   useEffect(() => {
     if (carrosselRef.current) {
-      const precisa =
-        carrosselRef.current.scrollWidth > carrosselRef.current.clientWidth;
-      setPodeDeslizar(precisa);
+      setPodeDeslizar(
+        carrosselRef.current.scrollWidth > carrosselRef.current.clientWidth
+      );
     }
   }, [filmes]);
 
   const cardBg = theme.palette.mode === "dark" ? "#2F2F2F" : "#fff";
   const textPrimary = theme.palette.mode === "dark" ? "#fff" : "#000";
-  const textSecondary = theme.palette.mode === "dark" ? "#ccc" : theme.palette.text.secondary;
+  const textSecondary =
+    theme.palette.mode === "dark" ? "#ccc" : theme.palette.text.secondary;
   const btnBg = theme.palette.mode === "dark" ? "#8B1A1A" : "#5A0C07";
   const btnHover = theme.palette.mode === "dark" ? "#A32B2B" : "#7A0000";
 
+  // Função centralizada para escolher sessão (igual ao fluxo da página Filmes)
+  const handleEscolherSessao = (filme: any) => {
+    if (!verificarLogin()) {
+      navigate("/login");
+      return;
+    }
+    setFilmeSelecionado(filme);
+    setOpenModal(true);
+  };
+
   return (
     <Box display="flex" flexDirection="column" alignItems="center">
-
-      {/* CONTAINER CENTRALIZADO */}
-      <Box width="100%" maxWidth="1200px" display="flex" flexDirection="column" alignItems="center">
-
+      <Box
+        width="100%"
+        maxWidth="1200px"
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+      >
+        {/* TÍTULO */}
         <Typography
           variant={isMobile ? "h2" : "h1"}
           align="center"
@@ -61,16 +89,13 @@ export default function Home() {
             display: "flex",
             flexWrap: "wrap",
             justifyContent: "center",
-            "& span": {
-              marginLeft: 1,
-              color: "#5A0C07",
-            },
+            "& span": { marginLeft: 1, color: "#5A0C07" },
           }}
         >
           CINESystem
         </Typography>
 
-        {/* CARD */}
+        {/* CARD INFORMATIVO */}
         <Box
           mt={10}
           mb={10}
@@ -87,12 +112,10 @@ export default function Home() {
             <Typography variant="h5" fontWeight={700} color={textPrimary}>
               Somos Um Cinema Dedicado À Melhor Tecnologia E Muita Pipoca
             </Typography>
-
             <Typography variant="body1" mt={2} color={textSecondary}>
               Localizado no coração da cidade, o CineSystem é o lugar ideal para
               se divertir e viver grandes histórias na telona!
             </Typography>
-
             <Button
               variant="contained"
               sx={{
@@ -123,13 +146,13 @@ export default function Home() {
             <Typography variant="h5" fontWeight={700} pb={2} color={textPrimary}>
               Divirta-se assistindo aos melhores filmes!
             </Typography>
-
             <Box>
               <Box mt={3} display="flex" alignItems="center" gap={1}>
                 <ConfirmationNumberIcon sx={{ color: theme.palette.primary.main }} />
-                <Typography fontSize="1rem" color={textPrimary}>Aberto ao público</Typography>
+                <Typography fontSize="1rem" color={textPrimary}>
+                  Aberto ao público
+                </Typography>
               </Box>
-
               <Box mt={2} display="flex" alignItems="center" gap={1}>
                 <AccessTimeIcon sx={{ color: theme.palette.primary.main }} />
                 <Typography fontSize="1rem" color={textSecondary}>
@@ -142,15 +165,10 @@ export default function Home() {
           </Box>
         </Box>
 
-        {/* FILMES EM CARTAZ — ALINHADO À ESQUERDA IGUAL AO OUTRO COMPONENTE */}
+        {/* FILMES EM CARTAZ */}
         <Box width="100%" display="flex" alignItems="center" mb={4} mt={2}>
           <Box
-            sx={{
-              width: "8px",
-              height: "80px",
-              bgcolor: "#5A0C07",
-              mr: 2,
-            }}
+            sx={{ width: "8px", height: "80px", bgcolor: "#5A0C07", mr: 2 }}
           />
           <Typography variant="h4" fontWeight={700} color={textPrimary}>
             FILMES EM CARTAZ
@@ -162,7 +180,11 @@ export default function Home() {
           {podeDeslizar && (
             <ArrowBackIosIcon
               fontSize="large"
-              sx={{ cursor: "pointer", display: { xs: "none", md: "block" }, color: textPrimary }}
+              sx={{
+                cursor: "pointer",
+                display: { xs: "none", md: "block" },
+                color: textPrimary,
+              }}
             />
           )}
 
@@ -196,16 +218,15 @@ export default function Home() {
                     width="100%"
                     style={{ borderRadius: "8px" }}
                   />
-
                   <Typography fontWeight={700} mt={1} color={textPrimary}>
                     {filme.titulo}
                   </Typography>
-
                   <Typography mt={1} color={textSecondary}>
                     Gênero: {filme.genero} <br />
                     Duração: {filme.duracao} min
                   </Typography>
 
+                  {/* BOTÃO ESCOLHER SESSÃO COM MESMO FLUXO DA PÁGINA FILMES */}
                   <Button
                     fullWidth
                     variant="contained"
@@ -215,7 +236,7 @@ export default function Home() {
                       color: "#fff",
                       "&:hover": { backgroundColor: btnHover },
                     }}
-                    onClick={() => navigate(`/escolher-sessao/${filme.id}`)}
+                    onClick={() => handleEscolherSessao(filme)}
                   >
                     Escolher Sessão
                   </Button>
@@ -227,12 +248,16 @@ export default function Home() {
           {podeDeslizar && (
             <ArrowForwardIosIcon
               fontSize="large"
-              sx={{ cursor: "pointer", display: { xs: "none", md: "block" }, color: textPrimary }}
+              sx={{
+                cursor: "pointer",
+                display: { xs: "none", md: "block" },
+                color: textPrimary,
+              }}
             />
           )}
         </Box>
 
-        {/* BOTÃO TODOS OS FILMES */}
+        {/* BOTÃO TODOS OS FILMES DISPONÍVEIS */}
         <Button
           variant="contained"
           sx={{
@@ -249,8 +274,14 @@ export default function Home() {
         >
           TODOS OS FILMES DISPONÍVEIS
         </Button>
-
       </Box>
+
+      {/* MODAL */}
+      <MovieModal
+        open={openModal}
+        onClose={() => setOpenModal(false)}
+        filme={filmeSelecionado}
+      />
     </Box>
   );
 }
