@@ -5,8 +5,6 @@ import { ThemeProvider, CssBaseline } from "@mui/material";
 import Layout from "./layout/Layout";
 import Home from "./pages/Home";
 import Login from "./components/Login";
-
-// Telas adicionais da outra branch
 import Welcome from "./pages/Welcome";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
@@ -14,24 +12,17 @@ import VerifyCode from "./pages/VerifyCode";
 import ResetPassword from "./pages/ResetPassword";
 import PostLogin from "./pages/PostLogin";
 import Filmes from "./pages/Filmes";
-import Reservas from "./pages/Reservas";
+import MinhasReservas from "./pages/MinhasReservas";
 import Contato from "./pages/Contato";
 import Perfil from "./pages/Perfil";
-import EscolherSessao from "./pages/EscolherSessao";
-
-// Seus componentes
-import MinhasReservas from "./pages/MinhasReservas";
-
-// Proteções
 import ReservasProtected from "./components/ReservasProtected";
 import AuthGuard from "./components/AuthGuard";
-
 import { lightTheme, darkTheme } from "./theme/theme";
 import ScrollToTop from "./components/ScrollToTop";
 
 export default function App() {
   const [darkMode, setDarkMode] = useState(false);
-  const [isLogged, setIsLogged] = useState(true);
+  const [isLogged, setIsLogged] = useState(false);
 
   useEffect(() => {
     const checkAuth = () => {
@@ -203,20 +194,6 @@ export default function App() {
                 handleLogout={handleLogout}
               >
                 <Perfil />
-              </Layout>
-            }
-          />
-
-          <Route
-            path="/escolher-sessao/:filmeId"
-            element={
-              <Layout
-                darkMode={darkMode}
-                toggleDarkMode={toggleDarkMode}
-                isLogged={isLogged}
-                handleLogout={handleLogout}
-              >
-                <EscolherSessao />
               </Layout>
             }
           />
