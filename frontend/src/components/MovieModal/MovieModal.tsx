@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   Dialog, DialogTitle, DialogContent, DialogActions,
-  IconButton, Typography, Box, Paper, Button, Snackbar, Alert
+  IconButton, Typography, Box, Paper, Button, Snackbar, Alert, useTheme
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import Ticket from '../../assets/ticket.svg';
@@ -16,6 +16,9 @@ interface MovieModalProps {
 }
 
 export default function MovieModal({ open, onClose, filme, token }: MovieModalProps) {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
+
   const [sessoes, setSessoes] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -27,7 +30,11 @@ export default function MovieModal({ open, onClose, filme, token }: MovieModalPr
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
 
-  // Buscar sessões ao abrir
+  const bgDialog = isDark ? "#2F2F2F" : "#f7f7f7";
+  const bgContent = isDark ? "#3a3a3a" : "#fafafa";
+  const bgPaper = isDark ? "#3a3a3a" : "#fff7ef";
+  const textColor = isDark ? "#ffffff" : "#000000";
+
   useEffect(() => {
     if (!filme) return;
 
@@ -48,12 +55,10 @@ export default function MovieModal({ open, onClose, filme, token }: MovieModalPr
     buscar();
   }, [filme]);
 
-  // Função para criar reserva
   async function handleReserva() {
     if (!horarioSelecionado) return;
 
     try {
-      // encontra a sessão selecionada pelo horário + data
       const sessao = sessoes.find((s) => {
         const sHorario = new Date(s.horario).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
         const sData = new Date(s.horario).toLocaleDateString("pt-BR");
@@ -73,11 +78,7 @@ export default function MovieModal({ open, onClose, filme, token }: MovieModalPr
       setSnackbarSeverity("success");
       setSnackbarOpen(true);
 
-      // redirecionar após 1.5s para mostrar snackbar
-      setTimeout(() => {
-        window.location.href = "/reservas";
-      }, 1500);
-
+      setTimeout(() => { window.location.href = "/reservas"; }, 1500);
     } catch (err: any) {
       console.error(err);
       setSnackbarMessage(err.response?.data?.message || "Erro ao criar reserva");
@@ -88,20 +89,15 @@ export default function MovieModal({ open, onClose, filme, token }: MovieModalPr
 
   return (
     <>
-      <Dialog 
-        open={open} 
-        onClose={onClose} 
-        maxWidth="md" 
-        fullWidth
-        PaperProps={{ sx: { background: "#f7f7f7", borderRadius: 3 } }}
+      <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth
+        PaperProps={{ sx: { backgroundColor: bgDialog, borderRadius: 3 } }}
       >
-        {/* TÍTULO */}
-        <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', fontWeight: "bold", fontFamily: "Red hat Text, sans-serif" }}>
+        <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', fontWeight: "bold", fontFamily: "Red hat Text, sans-serif", color: textColor }}>
           {filme?.titulo ?? "Carregando..."}
-          <IconButton onClick={onClose} size="small"><CloseIcon /></IconButton>
+          <IconButton onClick={onClose} size="small" sx={{ color: textColor }}><CloseIcon /></IconButton>
         </DialogTitle>
 
-        <DialogContent dividers sx={{ background: "#fafafa" }}>
+        <DialogContent dividers sx={{ backgroundColor: bgContent }}>
           <Box display="flex" justifyContent="center" mb={2} sx={{ position: "relative" }}>
             <img src={Ticket} alt="Ticket" style={{ width: 390 }} />
 
@@ -123,9 +119,8 @@ export default function MovieModal({ open, onClose, filme, token }: MovieModalPr
             )}
           </Box>
 
-          {loading && <Typography>Carregando sessões...</Typography>}
-
-          {!loading && sessoes.length === 0 && <Typography>Nenhuma sessão disponível.</Typography>}
+          {loading && <Typography sx={{ color: textColor }}>Carregando sessões...</Typography>}
+          {!loading && sessoes.length === 0 && <Typography sx={{ color: textColor }}>Nenhuma sessão disponível.</Typography>}
 
           {!loading && sessoes.length > 0 && (
             <Box display="grid" gridTemplateColumns="repeat(3, 1fr)" gap={2} sx={{ mt: 2 }}>
@@ -140,9 +135,11 @@ export default function MovieModal({ open, onClose, filme, token }: MovieModalPr
                     sx={{
                       p: 1.5, cursor: "pointer", borderRadius: 3, minHeight: 120,
                       border: selecionado ? "3px solid rgba(126,0,0,1)" : "2px solid rgba(126,0,0,0.7)",
-                      background: selecionado ? "rgba(126,0,0,0.15)" : "#fff7ef",
-                      transition: "0.2s", "&:hover": { transform: "scale(1.03)", background: "rgba(126,0,0,0.05)" },
-                      display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 0.3
+                      backgroundColor: selecionado ? "rgba(126,0,0,0.15)" : bgPaper,
+                      transition: "0.2s",
+                      "&:hover": { transform: "scale(1.03)", backgroundColor: "rgba(126,0,0,0.05)" },
+                      display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 0.3,
+                      color: textColor
                     }}>
                     <Typography sx={{ fontSize: 12, opacity: 0.7 }}>Data</Typography>
                     <Typography sx={{ fontWeight: "bold", fontSize: 14 }}>{data}</Typography>
@@ -161,13 +158,14 @@ export default function MovieModal({ open, onClose, filme, token }: MovieModalPr
           <Button
             variant="contained"
             disabled={!horarioSelecionado}
-            onClick={handleReserva} // 🔥 função de reserva
+            onClick={handleReserva}
             sx={{
               backgroundColor: "rgba(126,0,0,1)",
               "&:hover": { backgroundColor: "rgba(100,0,0,1)" },
               padding: "16px 40px",
               fontSize: "1rem",
               fontFamily: "Red hat Text, sans-serif",
+              color: textColor 
             }}
           >
             Reservar
@@ -175,13 +173,7 @@ export default function MovieModal({ open, onClose, filme, token }: MovieModalPr
         </DialogActions>
       </Dialog>
 
-      {/* Snackbar */}
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={3000}
-        onClose={() => setSnackbarOpen(false)}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
+      <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={() => setSnackbarOpen(false)} anchorOrigin={{ vertical: "top", horizontal: "center" }}>
         <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity} sx={{ width: '100%' }}>
           {snackbarMessage}
         </Alert>

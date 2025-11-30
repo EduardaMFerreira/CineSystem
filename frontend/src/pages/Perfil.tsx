@@ -1,4 +1,4 @@
-import { Box, Container} from "@mui/material";
+import { Box, Container } from "@mui/material";
 import PerfilHeader from "../components/Perfil/PerfilHeader";
 import PerfilInfo from "../components/Perfil/PerfilInfo";
 import { useState, useEffect } from "react";
@@ -10,43 +10,45 @@ export default function Perfil() {
   const [isEditing, setIsEditing] = useState(false);
   const [isLogged, setIsLogged] = useState(!!localStorage.getItem("token"));
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [userData, setUserData] = useState<{ nome: string; email: string; senha: string } | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     setIsLogged(!!token);
-    if (!token) setShowLoginModal(true);
-  }, []);
 
-  const userMock = {
-    nome: "Ana Luiza",
-    email: "ana@example.com",
-    senha: "123456",
-  };
+    if (!token) {
+      setShowLoginModal(true);
+      return;
+    }
+
+    // Fetch dados do usuário logado CORRETO: rota /users/me
+    fetch("http://localhost:3000/users/me", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Erro ao buscar dados do usuário");
+        return res.json();
+      })
+      .then((data) => {
+        setUserData({ nome: data.nome, email: data.email, senha: "" }); // senha não vem da API
+      })
+      .catch((err) => {
+        console.error(err);
+        setShowLoginModal(true);
+      });
+  }, []);
 
   const handleEditar = () => {
     setIsEditing(!isEditing);
   };
 
-  if (!isLogged) {
-    return (
-      <LoginModal
-        open={showLoginModal}
-        onClose={() => {
-          setShowLoginModal(false);
-          navigate("/home");
-        }}
-        onLoginSuccess={() => {
-          setShowLoginModal(false);
-          setIsLogged(true);
-        }}
-      />
-    );
-  }
+  if (!isLogged) return <LoginModal open={showLoginModal} />;
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Box sx={{ display: "flex", gap: 4 }}>
-
         {/* Barra lateral */}
         <Box
           sx={{
@@ -59,14 +61,15 @@ export default function Perfil() {
 
         {/* Conteúdo */}
         <Box sx={{ flex: 1 }}>
-
           <PerfilHeader />
 
-          <PerfilInfo
-            initialData={userMock}
-            isEditing={isEditing}
-            onClick={handleEditar}
-          />
+          {userData && (
+            <PerfilInfo
+              initialData={userData}
+              isEditing={isEditing}
+              onClick={handleEditar}
+            />
+          )}
         </Box>
       </Box>
     </Container>
