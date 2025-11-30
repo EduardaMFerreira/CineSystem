@@ -1,6 +1,6 @@
 import { Box, Typography, IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import TicketImg2 from "../../assets/Ticket Vazio.svg";
+import TicketImg2 from "../../assets/ticket.svg";
 
 interface TicketProps {
   id: string;

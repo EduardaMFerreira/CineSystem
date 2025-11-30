@@ -11,12 +11,20 @@ import { z } from "zod";
  */
 export const getAll = async (req: Request, res: Response) => {
   try {
-    const sessoes = await sessaoService.getAllSessoes();
-    const sessoesArray = Array.isArray(sessoes) ? sessoes : [];
+    const filmeId = req.query.filmeId ? Number(req.query.filmeId) : undefined;
 
-    const sessoesFormatadas = sessoesArray.map(sessao => ({
-      ...sessao,
+    const filtro: any = {};
+    if (filmeId) filtro.filmeId = filmeId;
+
+    const sessoes = await sessaoService.getAllSessoes(filtro);
+
+    const sessoesFormatadas = sessoes.map(sessao => ({
+      id: sessao.id,
       horario: sessao.horario.toISOString(),
+      filmeId: sessao.filmeId,
+      salaId: sessao.salaId,
+      filme: sessao.filme,
+      sala: sessao.sala
     }));
 
     const response = z.array(sessaoResponseSchema).parse(sessoesFormatadas);
@@ -25,6 +33,7 @@ export const getAll = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Erro ao buscar sessões", error: error.message });
   }
 };
+
 
 /**
  * Retorna uma sessão específica pelo ID.

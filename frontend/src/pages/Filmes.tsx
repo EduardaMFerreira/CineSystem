@@ -35,10 +35,10 @@ export default function Filmes() {
   const [openMovieModal, setOpenMovieModal] = useState(false);
   const [filmeSelecionado, setFilmeSelecionado] = useState<Filme | null>(null);
 
-  // Função para verificar login
+  // Verificar login
   const isLogged = () => !!localStorage.getItem("token");
 
-  // Carregar filmes
+  // Carregar filmes do backend
   useEffect(() => {
     async function carregarFilmes() {
       try {
@@ -52,16 +52,16 @@ export default function Filmes() {
   }, []);
 
   const generos = Array.from(new Set(filmes.map(f => f.genero)));
+
   const filmesFiltrados = filmes.filter(
     f =>
       (!selectedGenero || f.genero === selectedGenero) &&
       f.titulo.toLowerCase().includes(searchText.toLowerCase())
   );
 
-  // Função chamada ao clicar "Escolher Sessão"
+  // Abrir modal ao clicar "Escolher Sessão"
   const handleEscolherSessao = (filme: Filme) => {
     if (!isLogged()) {
-      // Redireciona para login
       navigate("/login");
       return;
     }
@@ -71,9 +71,17 @@ export default function Filmes() {
   };
 
   return (
-    <Box p={{ xs: 2, md: 3 }} minHeight="100vh" width="100%" display="flex" flexDirection="column" alignItems="center">
+    <Box
+      p={{ xs: 2, md: 3 }}
+      minHeight="100vh"
+      width="100%"
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+    >
       <Box width="100%" maxWidth="1200px">
-        {/* Título */}
+        
+        {/* TÍTULO */}
         <Box display="flex" alignItems="center" mb={3} mt={2}>
           <Box sx={{ width: "8px", height: { xs: "50px", md: "80px" }, bgcolor: primaryRed, mr: 2 }} />
           <Typography variant="h4" fontWeight={700} fontSize={{ xs: "1.8rem", md: "2.3rem" }}>
@@ -81,7 +89,7 @@ export default function Filmes() {
           </Typography>
         </Box>
 
-        {/* Filtros */}
+        {/* FILTROS */}
         <Box display="flex" flexWrap="wrap" alignItems="center" gap={2} mb={4}>
           <FormControl sx={{ minWidth: 120 }} size="small">
             <Select
@@ -116,7 +124,7 @@ export default function Filmes() {
           />
         </Box>
 
-        {/* Grid de filmes */}
+        {/* GRID DE FILMES */}
         <Box
           display="grid"
           gridTemplateColumns={{
@@ -127,12 +135,25 @@ export default function Filmes() {
           gap={3}
         >
           {filmesFiltrados.map(filme => (
-            <Box key={filme.id} p={2} borderRadius={2} boxShadow="0 4px 12px rgba(0,0,0,0.12)" bgcolor={theme.palette.mode === "dark" ? "#2F2F2F" : "#fff"}>
+            <Box
+              key={filme.id}
+              p={2}
+              borderRadius={2}
+              boxShadow="0 4px 12px rgba(0,0,0,0.12)"
+              bgcolor={theme.palette.mode === "dark" ? "#2F2F2F" : "#fff"}
+            >
               <img
                 src={filme.bannerUrl}
-                style={{ width: "100%", borderRadius: "8px", aspectRatio: "3 / 4", objectFit: "cover" }}
+                style={{
+                  width: "100%",
+                  borderRadius: "8px",
+                  aspectRatio: "3 / 4",
+                  objectFit: "cover"
+                }}
               />
+
               <Typography fontWeight={700} mt={1}>{filme.titulo}</Typography>
+
               <Typography mt={1} fontSize="0.9rem" color={theme.palette.text.secondary}>
                 Gênero: {filme.genero} <br />
                 Duração: {filme.duracao} min
@@ -141,7 +162,12 @@ export default function Filmes() {
               <Button
                 fullWidth
                 variant="contained"
-                sx={{ mt: 1, backgroundColor: primaryRed, color: "#fff", fontWeight: 600 }}
+                sx={{
+                  mt: 1,
+                  backgroundColor: primaryRed,
+                  color: "#fff",
+                  fontWeight: 600
+                }}
                 onClick={() => handleEscolherSessao(filme)}
               >
                 Escolher Sessão
@@ -151,11 +177,12 @@ export default function Filmes() {
         </Box>
       </Box>
 
-      {/* MovieModal */}
+      {/* MODAL — AGORA COM FILME PASSADO COMO PROP */}
       {filmeSelecionado && (
         <MovieModal
           open={openMovieModal}
           onClose={() => setOpenMovieModal(false)}
+          filme={filmeSelecionado}
         />
       )}
     </Box>
