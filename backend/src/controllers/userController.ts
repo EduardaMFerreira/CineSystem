@@ -24,9 +24,20 @@ export const getMe = async (req: Request, res: Response) => {
 export const updateMe = async (req: Request, res: Response) => {
   try {
     const userId = req.user!.userId;
-    const { nome, email } = req.body;
+    const { nome, email, senha } = req.body;
 
-    const updated = await userService.update(userId, { nome, email });
+    const dataToUpdate: any = {};
+
+    if (nome) dataToUpdate.nome = nome;
+    if (email) dataToUpdate.email = email;
+
+    // se mandou senha → criptografa antes de salvar
+    if (senha) {
+      const hashed = await bcrypt.hash(senha, 10);
+      dataToUpdate.senha = hashed;
+    }
+
+    const updated = await userService.update(userId, dataToUpdate);
 
     return res.json({
       message: "Perfil atualizado com sucesso",
@@ -36,7 +47,8 @@ export const updateMe = async (req: Request, res: Response) => {
         email: updated.email,
       },
     });
-  } catch {
+  } catch (error) {
+    console.error(error);
     return res.status(500).json({ message: "Erro ao atualizar perfil" });
   }
 };

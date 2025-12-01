@@ -1,11 +1,17 @@
-import { Box, TextField, useTheme } from "@mui/material";
+import {
+  Box,
+  TextField,
+  useTheme,
+  Button,
+  Snackbar,
+  Alert,
+} from "@mui/material";
 import { useState } from "react";
-import EditarBotao from "./EditarBotao";
 
 interface PerfilInfoProps {
-  initialData?: { nome: string; email: string; senha: string };
+  initialData: { nome: string; email: string };
   isEditing: boolean;
-  onClick?: () => void; // alternar entre edição e salvar
+  onClick: () => void;
 }
 
 export default function PerfilInfo({
@@ -16,69 +22,88 @@ export default function PerfilInfo({
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
 
-  const [nome, setNome] = useState(initialData?.nome || "");
-  const [email, setEmail] = useState(initialData?.email || "");
-  const [senha, setSenha] = useState(initialData?.senha || "");
+  const [nome, setNome] = useState(initialData.nome);
+  const [email, setEmail] = useState(initialData.email);
+  const [senha, setSenha] = useState("");
+
+  // ALERTA
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMsg, setAlertMsg] = useState("");
+  const [alertType, setAlertType] = useState<"success" | "error">("success");
+
+  const showAlert = (msg: string, type: "success" | "error") => {
+    setAlertMsg(msg);
+    setAlertType(type);
+    setAlertOpen(true);
+  };
+
+  const salvarAlteracoes = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await fetch("http://localhost:3000/users/me", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          nome,
+          email,
+          senha: senha.length > 0 ? senha : undefined,
+        }),
+      });
+
+      if (!res.ok) {
+        showAlert("Erro ao atualizar perfil!", "error");
+        return;
+      }
+
+      showAlert("Perfil atualizado com sucesso!", "success");
+      onClick();
+    } catch (err) {
+      console.error(err);
+      showAlert("Erro ao atualizar perfil!", "error");
+    }
+  };
 
   const bgColor = isDark ? "#2F2F2F" : "#FFFFFF";
-  const borderColor = isDark ? "#555555" : "#CFCFCF";
-  const textColor = isDark ? "#FFFFFF" : "#000000";
+  const borderColor = isDark ? "#555" : "#CFCFCF";
 
   return (
     <Box
       sx={{
-        width: "1150px",
-        height: "378px",
+        width: "100%",
+        maxWidth: "1150px",
         border: `1px solid ${borderColor}`,
-        borderRadius: "0px",
-        p: 4,
+        p: { xs: 2, md: 4 },
         mb: 3,
         backgroundColor: bgColor,
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        ml: -5,
+        borderRadius: "8px",
       }}
     >
-      {/* GRID de 2 colunas */}
       <Box
         display="grid"
-        gridTemplateColumns="1fr 1fr"
-        gap={9}
+        gridTemplateColumns={{ xs: "1fr", md: "1fr 1fr" }}
+        gap={{ xs: 4, md: 6 }} // GAP MAIOR AQUI
         alignItems="center"
       >
         {/* Nome */}
         <TextField
           label="Nome"
           value={nome}
-          onChange={(e) => setNome(e.target.value)}
           disabled={!isEditing}
-          sx={{
-            input: { color: textColor },
-            "& .MuiInputLabel-root": { color: textColor },
-            "& .MuiOutlinedInput-root": {
-              "& fieldset": { borderColor: borderColor },
-              "&:hover fieldset": { borderColor: borderColor },
-              "&.Mui-focused fieldset": { borderColor: borderColor },
-            },
-          }}
+          onChange={(e) => setNome(e.target.value)}
+          fullWidth
         />
 
         {/* Email */}
         <TextField
           label="E-mail"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
           disabled={!isEditing}
-          sx={{
-            input: { color: textColor },
-            "& .MuiInputLabel-root": { color: textColor },
-            "& .MuiOutlinedInput-root": {
-              "& fieldset": { borderColor: borderColor },
-              "&:hover fieldset": { borderColor: borderColor },
-              "&.Mui-focused fieldset": { borderColor: borderColor },
-            },
-          }}
+          onChange={(e) => setEmail(e.target.value)}
+          fullWidth
         />
 
         {/* Senha */}
@@ -86,22 +111,53 @@ export default function PerfilInfo({
           label="Senha"
           type="password"
           value={senha}
-          onChange={(e) => setSenha(e.target.value)}
           disabled={!isEditing}
-          sx={{
-            input: { color: textColor },
-            "& .MuiInputLabel-root": { color: textColor },
-            "& .MuiOutlinedInput-root": {
-              "& fieldset": { borderColor: borderColor },
-              "&:hover fieldset": { borderColor: borderColor },
-              "&.Mui-focused fieldset": { borderColor: borderColor },
-            },
-          }}
+          onChange={(e) => setSenha(e.target.value)}
+          fullWidth
         />
 
-        {/* Botão funcional */}
-        <EditarBotao isEditing={isEditing} onClick={onClick} />
+        {/* Botão */}
+        {isEditing ? (
+          <Button
+            variant="contained"
+            color="success"
+            sx={{ height: "56px" }}
+            onClick={salvarAlteracoes}
+            fullWidth
+          >
+            Salvar
+          </Button>
+        ) : (
+          <Button
+            variant="contained"
+            fullWidth
+            sx={{
+              height: "56px",
+              background: "#5A0C07",
+              "&:hover": { background: "#4a0a06" },
+            }}
+            onClick={onClick}
+          >
+            Editar
+          </Button>
+        )}
       </Box>
+
+      {/* ALERTA */}
+      <Snackbar
+        open={alertOpen}
+        autoHideDuration={3000}
+        onClose={() => setAlertOpen(false)}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setAlertOpen(false)}
+          severity={alertType}
+          sx={{ fontSize: "1rem" }}
+        >
+          {alertMsg}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }

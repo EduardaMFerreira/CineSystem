@@ -5,7 +5,7 @@ export const userService = {
     return prisma.user.findUnique({ where: { id } });
   },
 
-  update: async (id: number, data: { nome?: string; email?: string }) => {
+  update: async (id: number, data: any) => {
     return prisma.user.update({
       where: { id },
       data,
