@@ -4,50 +4,40 @@ const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || "http://localhost:3000",
 });
 
-// Pega o token do localStorage
+// Token
 function getToken() {
   return localStorage.getItem("token");
 }
 
-/**
- * Criar uma nova reserva
- */
+/** Criar reserva */
 export async function criarReserva(sessaoId: number) {
   const token = getToken();
   const res = await api.post(
     "/reservas",
     { sessaoId },
     {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { Authorization: `Bearer ${token}` },
     }
   );
   return res.data.reserva;
 }
 
-/**
- * Listar reservas do usuário logado
- */
+/** Listar reservas */
 export async function listarReservas() {
   const token = getToken();
   const res = await api.get("/reservas", {
     headers: { Authorization: `Bearer ${token}` },
   });
-  return res.data; // já retorna array de reservas
+  return res.data;
 }
 
-/**
- * Deletar reserva
- */
+/** DELETAR RESERVA — enviando corpo no delete */
 export async function deletarReserva(reservaId: number) {
   const token = getToken();
   if (!token) throw new Error("Token não encontrado");
 
-  // Envia o ID no corpo da requisição
-  const res = await api.delete("/reservas", {
+  const res = await api.delete(`/reservas/${reservaId}`, {
     headers: { Authorization: `Bearer ${token}` },
-    data: { id: reservaId }, 
   });
 
   return res.data;

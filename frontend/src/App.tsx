@@ -1,6 +1,6 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { ThemeProvider, CssBaseline } from "@mui/material";
+import { ThemeProvider, CssBaseline, Snackbar, Alert } from "@mui/material";
 
 import Layout from "./layout/Layout";
 import Home from "./pages/Home";
@@ -23,6 +23,11 @@ import ScrollToTop from "./components/ScrollToTop";
 export default function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [isLogged, setIsLogged] = useState(false);
+
+  // ALERTA GLOBAL
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMsg, setAlertMsg] = useState("");
+  const [alertType, setAlertType] = useState<"success" | "info" | "warning" | "error">("success");
 
   useEffect(() => {
     const checkAuth = () => {
@@ -48,169 +53,217 @@ export default function App() {
     setIsLogged(true);
   }
 
-  function handleLogout() {
-    localStorage.removeItem("token");
-    setIsLogged(false);
-  }
-
   return (
     <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
       <CssBaseline />
       <BrowserRouter>
-        <ScrollToTop />
-
-        <Routes>
-          {/* Rotas públicas */}
-          <Route
-            path="/welcome"
-            element={
-              <AuthGuard requireAuth={false} redirectTo="/home">
-                <Welcome />
-              </AuthGuard>
-            }
-          />
-
-          <Route
-            path="/login"
-            element={
-              <AuthGuard requireAuth={false} redirectTo="/home">
-                <Login onLogin={handleLogin} />
-              </AuthGuard>
-            }
-          />
-
-          <Route
-            path="/register"
-            element={
-              <AuthGuard requireAuth={false} redirectTo="/home">
-                <Register />
-              </AuthGuard>
-            }
-          />
-
-          <Route
-            path="/forgot-password"
-            element={
-              <AuthGuard requireAuth={false} redirectTo="/home">
-                <ForgotPassword />
-              </AuthGuard>
-            }
-          />
-
-          <Route
-            path="/verify-code"
-            element={
-              <AuthGuard requireAuth={false} redirectTo="/home">
-                <VerifyCode />
-              </AuthGuard>
-            }
-          />
-
-          <Route
-            path="/reset-password"
-            element={
-              <AuthGuard requireAuth={false} redirectTo="/home">
-                <ResetPassword />
-              </AuthGuard>
-            }
-          />
-
-          <Route
-            path="/post-login"
-            element={
-              <AuthGuard requireAuth={true} redirectTo="/login">
-                <PostLogin />
-              </AuthGuard>
-            }
-          />
-
-          {/* Rotas com layout */}
-          <Route
-            path="/home"
-            element={
-              <Layout
-                darkMode={darkMode}
-                toggleDarkMode={toggleDarkMode}
-                isLogged={isLogged}
-                handleLogout={handleLogout}
-              >
-                <Home />
-              </Layout>
-            }
-          />
-
-          <Route
-            path="/filmes"
-            element={
-              <Layout
-                darkMode={darkMode}
-                toggleDarkMode={toggleDarkMode}
-                isLogged={isLogged}
-                handleLogout={handleLogout}
-              >
-                <Filmes />
-              </Layout>
-            }
-          />
-
-          {/* 🆕 SUA ROTA DE MINHAS RESERVAS */}
-          <Route
-            path="/reservas"
-            element={
-              <Layout
-                darkMode={darkMode}
-                toggleDarkMode={toggleDarkMode}
-                isLogged={isLogged}
-                handleLogout={handleLogout}
-              >
-                <ReservasProtected isLogged={isLogged}>
-                  <MinhasReservas />
-                </ReservasProtected>
-              </Layout>
-            }
-          />
-
-          <Route
-            path="/contato"
-            element={
-              <Layout
-                darkMode={darkMode}
-                toggleDarkMode={toggleDarkMode}
-                isLogged={isLogged}
-                handleLogout={handleLogout}
-              >
-                <Contato />
-              </Layout>
-            }
-          />
-
-          <Route
-            path="/perfil"
-            element={
-              <Layout
-                darkMode={darkMode}
-                toggleDarkMode={toggleDarkMode}
-                isLogged={isLogged}
-                handleLogout={handleLogout}
-              >
-                <Perfil />
-              </Layout>
-            }
-          />
-
-          {/* Redirecionamento inicial */}
-          <Route
-            path="/"
-            element={
-              localStorage.getItem("token") ? (
-                <Navigate to="/home" replace />
-              ) : (
-                <Navigate to="/welcome" replace />
-              )
-            }
-          />
-        </Routes>
+        <AppRoutes
+          darkMode={darkMode}
+          toggleDarkMode={toggleDarkMode}
+          isLogged={isLogged}
+          setIsLogged={setIsLogged}
+          alertOpen={alertOpen}
+          setAlertOpen={setAlertOpen}
+          alertMsg={alertMsg}
+          setAlertMsg={setAlertMsg}
+          alertType={alertType}
+          setAlertType={setAlertType}
+          handleLogin={handleLogin}
+        />
       </BrowserRouter>
     </ThemeProvider>
+  );
+}
+
+// Componente interno para usar useNavigate()
+function AppRoutes({
+  darkMode,
+  toggleDarkMode,
+  isLogged,
+  setIsLogged,
+  alertOpen,
+  setAlertOpen,
+  alertMsg,
+  setAlertMsg,
+  alertType,
+  setAlertType,
+  handleLogin,
+}: any) {
+  const navigate = useNavigate();
+
+  // 🔥 LOGOUT COMPLETO — alerta + redirecionamento + pipoca
+  function handleLogout() {
+    localStorage.removeItem("token");
+    setIsLogged(false);
+
+    // ALERTA PERSONALIZADO
+    setAlertMsg("Você saiu da sua conta Cinesystem! Até o próximo filme!");
+    setAlertType("info");
+    setAlertOpen(true);
+
+    // REDIRECIONAMENTO
+    navigate("/home");
+  }
+
+  return (
+    <>
+      <ScrollToTop />
+
+      {/* ALERTA GLOBAL */}
+      <Snackbar
+        open={alertOpen}
+        autoHideDuration={4000} // mais tempo para leitura
+        onClose={() => setAlertOpen(false)}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setAlertOpen(false)}
+          severity={alertType}
+          sx={{ fontSize: "1rem", display: "flex", alignItems: "center" }}
+          icon={<span style={{ fontSize: '1.5rem' }}>🍿</span>} // ícone de pipoca
+        >
+          {alertMsg}
+        </Alert>
+      </Snackbar>
+
+      <Routes>
+        {/* Rotas públicas */}
+        <Route
+          path="/welcome"
+          element={
+            <AuthGuard requireAuth={false} redirectTo="/home">
+              <Welcome />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <AuthGuard requireAuth={false} redirectTo="/home">
+              <Login onLogin={handleLogin} />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <AuthGuard requireAuth={false} redirectTo="/home">
+              <Register />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/forgot-password"
+          element={
+            <AuthGuard requireAuth={false} redirectTo="/home">
+              <ForgotPassword />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/verify-code"
+          element={
+            <AuthGuard requireAuth={false} redirectTo="/home">
+              <VerifyCode />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/reset-password"
+          element={
+            <AuthGuard requireAuth={false} redirectTo="/home">
+              <ResetPassword />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/post-login"
+          element={
+            <AuthGuard requireAuth={true} redirectTo="/login">
+              <PostLogin />
+            </AuthGuard>
+          }
+        />
+
+        {/* ROTAS COM LAYOUT */}
+        <Route
+          path="/home"
+          element={
+            <Layout
+              darkMode={darkMode}
+              toggleDarkMode={toggleDarkMode}
+              isLogged={isLogged}
+              handleLogout={handleLogout}
+            >
+              <Home />
+            </Layout>
+          }
+        />
+        <Route
+          path="/filmes"
+          element={
+            <Layout
+              darkMode={darkMode}
+              toggleDarkMode={toggleDarkMode}
+              isLogged={isLogged}
+              handleLogout={handleLogout}
+            >
+              <Filmes />
+            </Layout>
+          }
+        />
+        <Route
+          path="/reservas"
+          element={
+            <Layout
+              darkMode={darkMode}
+              toggleDarkMode={toggleDarkMode}
+              isLogged={isLogged}
+              handleLogout={handleLogout}
+            >
+              <ReservasProtected isLogged={isLogged}>
+                <MinhasReservas />
+              </ReservasProtected>
+            </Layout>
+          }
+        />
+        <Route
+          path="/contato"
+          element={
+            <Layout
+              darkMode={darkMode}
+              toggleDarkMode={toggleDarkMode}
+              isLogged={isLogged}
+              handleLogout={handleLogout}
+            >
+              <Contato />
+            </Layout>
+          }
+        />
+        <Route
+          path="/perfil"
+          element={
+            <Layout
+              darkMode={darkMode}
+              toggleDarkMode={toggleDarkMode}
+              isLogged={isLogged}
+              handleLogout={handleLogout}
+            >
+              <Perfil />
+            </Layout>
+          }
+        />
+
+        {/* Rota inicial */}
+        <Route
+          path="/"
+          element={
+            localStorage.getItem("token")
+              ? <Navigate to="/home" replace />
+              : <Navigate to="/welcome" replace />
+          }
+        />
+      </Routes>
+    </>
   );
 }
