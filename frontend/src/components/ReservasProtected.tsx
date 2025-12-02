@@ -1,7 +1,7 @@
 import { Box, Typography, Container, Button, Alert } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import LockIcon from "@mui/icons-material/Lock";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 interface ReservasProtectedProps {
   children: ReactNode;

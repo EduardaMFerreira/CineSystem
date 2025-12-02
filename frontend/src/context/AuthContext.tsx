@@ -1,4 +1,6 @@
-import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
+import type { ReactNode } from "react"; // se você usar ReactNode em tipagem
+
 import { loginRequest } from "../services/authService";
 
 interface AuthContextType {
