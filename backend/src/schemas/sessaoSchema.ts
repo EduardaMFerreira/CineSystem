@@ -8,7 +8,7 @@ import { z } from "zod";
  * - `salaId`: ID da sala associada à sessão, deve ser número inteiro positivo
  */
 export const createSessaoSchema = z.object({
-  horario: z.string().refine((date) => !isNaN(Date.parse(date)), {
+  horario: z.string().refine((date: string) => !isNaN(Date.parse(date)), {
     message: "Data e hora inválidas",
   }),
   filmeId: z.number().int().positive("FilmeId inválido"),
@@ -22,7 +22,7 @@ export const createSessaoSchema = z.object({
  * - Mesmas validações do schema de criação se aplicam
  */
 export const updateSessaoSchema = z.object({
-  horario: z.string().refine((date) => !isNaN(Date.parse(date)), {
+  horario: z.string().refine((date: string) => !isNaN(Date.parse(date)), {
     message: "Data e hora inválidas",
   }).optional(),
   filmeId: z.number().int().positive("FilmeId inválido").optional(),
