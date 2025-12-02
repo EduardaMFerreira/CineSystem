@@ -4,7 +4,7 @@ import {
   IconButton, Typography, Box, Paper, Button, Snackbar, Alert, useTheme
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import Ticket from '../../assets/ticket.svg';
+import Ticket from '../../assets/ticket_temp.svg';
 import { listarSessoesPorFilme } from '../../services/sessaoService';
 import { criarReserva } from '../../services/reservaService';
 
