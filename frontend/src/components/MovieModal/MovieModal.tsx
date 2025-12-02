@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Dialog, DialogTitle, DialogContent, DialogActions,
   IconButton, Typography, Box, Paper, Button, Snackbar, Alert, useTheme
@@ -12,10 +12,9 @@ interface MovieModalProps {
   open: boolean;
   onClose: () => void;
   filme: any | null;
-  token: string;
 }
 
-export default function MovieModal({ open, onClose, filme, token }: MovieModalProps) {
+export default function MovieModal({ open, onClose, filme }: MovieModalProps) {
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
 
@@ -72,7 +71,7 @@ export default function MovieModal({ open, onClose, filme, token }: MovieModalPr
         return;
       }
 
-      await criarReserva(sessao.id, token);
+      await criarReserva(sessao.id);
 
       setSnackbarMessage("Reserva criada com sucesso!");
       setSnackbarSeverity("success");

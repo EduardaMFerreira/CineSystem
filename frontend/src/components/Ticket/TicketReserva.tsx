@@ -12,7 +12,6 @@ interface TicketProps {
 }
 
 export default function TicketReserva({
-  id,
   filme,
   sala,
   horario,

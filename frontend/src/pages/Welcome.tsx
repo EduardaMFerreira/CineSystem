@@ -1,4 +1,4 @@
-import { Box, Button, Typography, Container } from "@mui/material";
+import { Button, Typography, Container } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 export default function Welcome() {
