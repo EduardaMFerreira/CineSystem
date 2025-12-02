@@ -13,7 +13,17 @@ const options = {
       description:
         "Documentação da API de Cinema (Filmes, Salas, Sessões, Autenticação e Reservas)",
     },
-    servers: [{ url: "http://localhost:3000" }],
+    // ✨  Adicionando o servidor de produção ✨
+    servers: [
+      { 
+        url: "https://cinesystem.onrender.com", // 🚀 URL DE PRODUÇÃO
+        description: "Servidor de Produção (Render)" 
+      },
+      { 
+        url: "http://localhost:3000",          // URL DE DESENVOLVIMENTO
+        description: "Servidor Local" 
+      },
+    ],
 
     components: {
       securitySchemes: {
