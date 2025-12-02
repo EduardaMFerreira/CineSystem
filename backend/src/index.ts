@@ -10,10 +10,11 @@ import userRoutes from "./routes/userRoutes";
 import { swaggerUi, swaggerSpec } from "./swagger";
 
 const app: Express = express();
-const port: number = 3000;
 
-app.use(cors()); // <-- ESSA LINHA RESOLVE O CORS
+// ⭐ Porta dinâmica (Render exige isso)
+const port = process.env.PORT || 3000;
 
+app.use(cors());
 app.use(express.json());
 
 // Servir uploads (se usar futuramente)
