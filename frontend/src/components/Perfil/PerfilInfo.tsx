@@ -14,6 +14,9 @@ interface PerfilInfoProps {
   onClick: () => void;
 }
 
+// 📌 DEFINIÇÃO DA URL BASE DA API
+const API_BASE_URL = "https://cinesystem.onrender.com";
+
 export default function PerfilInfo({
   initialData,
   isEditing,
@@ -41,7 +44,8 @@ export default function PerfilInfo({
     try {
       const token = localStorage.getItem("token");
 
-      const res = await fetch("http://localhost:3000/users/me", {
+      // ✅ CORREÇÃO AQUI: Usando API_BASE_URL
+      const res = await fetch(`${API_BASE_URL}/users/me`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -55,6 +59,9 @@ export default function PerfilInfo({
       });
 
       if (!res.ok) {
+        // Se a resposta não for OK (ex: 400, 401, 500), tenta logar o erro
+        const errorData = await res.json().catch(() => ({ message: res.statusText }));
+        console.error("Erro na API:", errorData);
         showAlert("Erro ao atualizar perfil!", "error");
         return;
       }
@@ -85,7 +92,7 @@ export default function PerfilInfo({
       <Box
         display="grid"
         gridTemplateColumns={{ xs: "1fr", md: "1fr 1fr" }}
-        gap={{ xs: 4, md: 6 }} // GAP MAIOR AQUI
+        gap={{ xs: 4, md: 6 }}
         alignItems="center"
       >
         {/* Nome */}

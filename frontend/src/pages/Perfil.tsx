@@ -10,7 +10,7 @@ export default function Perfil() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [userData, setUserData] = useState<{ nome: string; email: string; senha: string } | null>(null);
 
-  useEffect(() => {
+useEffect(() => {
     const token = localStorage.getItem("token");
     setIsLogged(!!token);
 
@@ -19,8 +19,9 @@ export default function Perfil() {
       return;
     }
 
-    // Fetch dados do usuário logado (rota /users/me)
-    fetch("http://localhost:3000/users/me", {
+    const API_BASE_URL = "https://cinesystem.onrender.com"; // <-- Nova URL Base
+
+    fetch(`${API_BASE_URL}/users/me`, { // <-- Usando a nova URL
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -36,7 +37,7 @@ export default function Perfil() {
         console.error(err);
         setShowLoginModal(true);
       });
-  }, []);
+}, []);
 
   const handleEditar = () => {
     setIsEditing(!isEditing);
