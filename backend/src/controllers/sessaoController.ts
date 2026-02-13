@@ -1,0 +1,103 @@
+import { Request, Response } from "express";
+import * as sessaoService from "../services/sessaoService";
+import { createSessaoSchema, updateSessaoSchema, sessaoResponseSchema } from "../schemas/sessaoSchema";
+import { z } from "zod";
+
+/**
+ * Retorna todas as sessões cadastradas no sistema.
+ * 
+ * - Formata o horário para string ISO
+ * - Valida cada sessão usando o Zod antes de enviar a resposta
+ */
+export const getAll = async (req: Request, res: Response) => {
+  try {
+    const filmeId = req.query.filmeId ? Number(req.query.filmeId) : undefined;
+
+    const filtro: any = {};
+    if (filmeId) filtro.filmeId = filmeId;
+
+    const sessoes = await sessaoService.getAllSessoes(filtro);
+
+    const sessoesFormatadas = sessoes.map(sessao => ({
+      id: sessao.id,
+      horario: sessao.horario.toISOString(),
+      filmeId: sessao.filmeId,
+      salaId: sessao.salaId,
+      filme: sessao.filme,
+      sala: sessao.sala
+    }));
+
+    const response = z.array(sessaoResponseSchema).parse(sessoesFormatadas);
+    res.json(response);
+  } catch (error: any) {
+    res.status(500).json({ message: "Erro ao buscar sessões", error: error.message });
+  }
+};
+
+
+/**
+ * Retorna uma sessão específica pelo ID.
+ */
+export const getById = async (req: Request, res: Response) => {
+  try {
+    const id = Number(req.params.id);
+    const sessao = await sessaoService.getSessaoById(id);
+    if (!sessao) return res.status(404).json({ message: "Sessão não encontrada" });
+
+    const sessaoFormatada = { ...sessao, horario: sessao.horario.toISOString() };
+    res.json(sessaoResponseSchema.parse(sessaoFormatada));
+  } catch (error: any) {
+    res.status(500).json({ message: "Erro ao buscar sessão", error: error.message });
+  }
+};
+
+/**
+ * Cria uma nova sessão no sistema.
+ */
+export const create = async (req: Request, res: Response) => {
+  const parsed = createSessaoSchema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ errors: parsed.error.issues });
+
+  try {
+    const novaSessao = await sessaoService.createSessao(parsed.data);
+    const sessaoFormatada = { ...novaSessao, horario: novaSessao.horario.toISOString() };
+    res.status(201).json(sessaoResponseSchema.parse(sessaoFormatada));
+  } catch (error: any) {
+    res.status(500).json({ message: "Erro ao criar sessão", error: error.message });
+  }
+};
+
+/**
+ * Atualiza uma sessão existente pelo ID.
+ */
+export const update = async (req: Request, res: Response) => {
+  const id = Number(req.params.id);
+  const parsed = updateSessaoSchema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ errors: parsed.error.issues });
+
+  try {
+    const sessaoAtualizada = await sessaoService.updateSessao(id, parsed.data);
+    if (!sessaoAtualizada) return res.status(404).json({ message: "Sessão não encontrada para atualização." });
+
+    const sessaoFormatada = { ...sessaoAtualizada, horario: sessaoAtualizada.horario.toISOString() };
+    res.json(sessaoResponseSchema.parse(sessaoFormatada));
+  } catch (error: any) {
+    res.status(500).json({ message: "Erro ao atualizar sessão", error: error.message });
+  }
+};
+
+/**
+ * Remove uma sessão existente pelo ID.
+ */
+export const remove = async (req: Request, res: Response) => {
+  const id = Number(req.params.id);
+
+  try {
+    const deletado = await sessaoService.deleteSessao(id);
+    if (!deletado) return res.status(404).json({ message: "Sessão não encontrada para exclusão." });
+
+    res.status(204).send();
+  } catch (error: any) {
+    res.status(500).json({ message: "Erro ao deletar sessão", error: error.message });
+  }
+};
